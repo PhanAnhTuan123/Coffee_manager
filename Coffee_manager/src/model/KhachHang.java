@@ -1,5 +1,7 @@
 package model;
 
+import java.sql.ResultSet;
+
 public class KhachHang {
 	private String maKH;
 	private String tenKH;
@@ -57,6 +59,11 @@ public class KhachHang {
 	public String toString() {
 		return "KhachHang [maKH=" + maKH + ", tenKH=" + tenKH + ", diaChi=" + diaChi + ", sdt=" + sdt + ", diemTL="
 				+ diemTL;
+	}
+
+	public static KhachHang getFromResultSet(ResultSet rs) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

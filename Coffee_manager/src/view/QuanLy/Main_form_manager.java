@@ -233,7 +233,14 @@ public class Main_form_manager extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				try {
+					new view_QuanLyKhachHang().setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
 			}
 		});
 		
