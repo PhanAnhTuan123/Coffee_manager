@@ -23,6 +23,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import view.QuanLy.Main_form_manager;
+
 public class Login extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -87,7 +89,15 @@ public class Login extends JFrame implements ActionListener{
 		btnDangNhap.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				try {
+					dangNhap();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -185,6 +195,9 @@ public class Login extends JFrame implements ActionListener{
 	}
 	
 	private void dangNhap() throws ClassNotFoundException, IOException {
-		
+		Main_form_manager gdChinh = new Main_form_manager();
+		gdChinh.setLocationRelativeTo(null);
+		gdChinh.setVisible(true);
+		dispose();
     }
 }

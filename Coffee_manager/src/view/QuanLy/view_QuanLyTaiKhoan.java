@@ -4,42 +4,55 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-
-import db.ConnectDB;
-import runapp.Login;
-import testbutton.Buttontest;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
-public class Main_form_manager extends JFrame {
+import db.ConnectDB;
+import list.List_HangHoa;
+import list.List_TaiKhoan;
+import model.HangHoa;
+import model.TaiKhoan;
+import runapp.Login;
+import testbutton.Buttontest;
 
+public class view_QuanLyTaiKhoan extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private Image img_logo = new ImageIcon(Main_form_manager.class.getResource("/image/logo.png")).getImage().getScaledInstance(100, 100,Image.SCALE_SMOOTH); 
+	private JButton btnThem, btnXoa, btnSua, btnLamMoi, btntimkiem;
 	private JLabel lbltennv;
+	private JTable table;
+	private DefaultTableModel tableModel;
+	private JTextField txtMK, txtTimKiem, txtTenDN;
 	Connection con = null;
 	ResultSet rs = null;
 	PreparedStatement pst = null;
 	private JPanel panelHangHoa, panelDatHang, panelNhanVien, panelTaiKhoan, panelThongKe;
 	Color customColor = new Color(255, 255, 255, 0);
 	Color whiteColor = new Color(255, 255, 255, 0);
-    private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh NV
-	
+	private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh NV
+	private List_TaiKhoan list_TaiKhoan = new List_TaiKhoan();
+
 	/**
 	 * Launch the application.
 	 * @throws Exception 
@@ -53,34 +66,37 @@ public class Main_form_manager extends JFrame {
 				}
 			}
 		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(Main_form_manager.class.getName()).log(java.util.logging.Level.SEVERE, null,
-					ex);
+			java.util.logging.Logger.getLogger(view_QuanLyTaiKhoan.class.getName()).log(java.util.logging.Level.SEVERE,
+					null, ex);
 		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(Main_form_manager.class.getName()).log(java.util.logging.Level.SEVERE, null,
-					ex);
+			java.util.logging.Logger.getLogger(view_QuanLyTaiKhoan.class.getName()).log(java.util.logging.Level.SEVERE,
+					null, ex);
 		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(Main_form_manager.class.getName()).log(java.util.logging.Level.SEVERE, null,
-					ex);
+			java.util.logging.Logger.getLogger(view_QuanLyTaiKhoan.class.getName()).log(java.util.logging.Level.SEVERE,
+					null, ex);
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(Main_form_manager.class.getName()).log(java.util.logging.Level.SEVERE, null,
-					ex);
+			java.util.logging.Logger.getLogger(view_QuanLyTaiKhoan.class.getName()).log(java.util.logging.Level.SEVERE,
+					null, ex);
 		}
+		
 		try {
 			ConnectDB.getInstance().connect();
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		Main_form_manager frame = new Main_form_manager();
+		view_QuanLyTaiKhoan frame = new view_QuanLyTaiKhoan();
 		frame.setVisible(true);
 	}
 
 	/**
 	 * Create the frame.
+	 * @throws Exception 
 	 */
-	public Main_form_manager() {
+	public view_QuanLyTaiKhoan() throws Exception {
+		initComponents();
 		setResizable(false);
 		setBackground(Color.WHITE);
-		setTitle("Giao Diện Quản Lý");
+		setTitle("Giao Diện Quản Lý Hàng Hóa");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		setBounds(100, 100, 1168, 650);
@@ -88,19 +104,20 @@ public class Main_form_manager extends JFrame {
 		contentPane.setBorder(null);
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		lblNvIcon = new JLabel("");
-        lblNvIcon.setIcon(new ImageIcon(Main_form_manager.class.getResource("/image/avt.png"))); // Thay đổi đường dẫn ảnh của bạn
-        lblNvIcon.setBounds(760, 5, 40, 40); // Điều chỉnh tọa độ và kích thước của ảnh
-        contentPane.add(lblNvIcon);
-      
+		lblNvIcon.setIcon(new ImageIcon(view_QuanLyTaiKhoan.class.getResource("/image/avt.png"))); // Thay đổi đường dẫn
+																									// ảnh của bạn
+		lblNvIcon.setBounds(760, 5, 40, 40); // Điều chỉnh tọa độ và kích thước của ảnh
+		contentPane.add(lblNvIcon);
+
 		JLabel lblnhanvien = new JLabel("QL:");
 		lblnhanvien.setForeground(Color.WHITE);
 		lblnhanvien.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblnhanvien.setBounds(801, 0, 39, 50);
 		lblnhanvien.setForeground(Color.WHITE);
 		contentPane.add(lblnhanvien);
-		
+
 		lbltennv = new JLabel("Trương Đại Lộc");
 		lbltennv.setForeground(Color.WHITE);
 		lbltennv.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -108,9 +125,11 @@ public class Main_form_manager extends JFrame {
 		lbltennv.setForeground(Color.WHITE);
 //		lbltennv.setText(UserInfo.getTenNhanVien());
 		contentPane.add(lbltennv);
-		
+
 		// Thêm panel nằm ngang ở trên cùng
 		JPanel topPanel = new JPanel() {
+			private static final long serialVersionUID = 1L;
+
 			protected void paintComponent(Graphics g) {
 				g.setColor(getBackground());
 				g.fillRect(0, 0, getWidth(), getHeight());
@@ -135,7 +154,8 @@ public class Main_form_manager extends JFrame {
 		qlyHangHoaButton.setBackground(new Color(255, 128, 64));
 		qlyHangHoaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
+				if (panelHangHoa.isVisible() || panelDatHang.isVisible() || panelNhanVien.isVisible()
+						|| panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
 					panelHangHoa.setVisible(false);
 					panelDatHang.setVisible(false);
 					panelNhanVien.setVisible(false);
@@ -152,6 +172,7 @@ public class Main_form_manager extends JFrame {
 
 		panelHangHoa = new JPanel() {
 			private static final long serialVersionUID = 1L;
+
 			protected void paintComponent(Graphics g) {
 				g.setColor(getBackground());
 				g.fillRect(0, 0, getWidth(), getHeight());
@@ -167,20 +188,10 @@ public class Main_form_manager extends JFrame {
 		JButton btnqlyMonAn = new JButton("Quản Lý Món Ăn");
 		btnqlyMonAn.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnqlyMonAn.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					view_QuanLyHangHoa gdqlhh = new view_QuanLyHangHoa();
-					gdqlhh.setLocationRelativeTo(null);
-					gdqlhh.setVisible(true);
-					dispose();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				
+
 			}
 		});
 
@@ -198,7 +209,8 @@ public class Main_form_manager extends JFrame {
 		datHangButton.setBackground(new Color(46, 139, 87));
 		datHangButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
+				if (panelHangHoa.isVisible() || panelDatHang.isVisible() || panelNhanVien.isVisible()
+						|| panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
 					panelHangHoa.setVisible(false);
 					panelDatHang.setVisible(false);
 					panelNhanVien.setVisible(false);
@@ -212,8 +224,10 @@ public class Main_form_manager extends JFrame {
 		datHangToolbar.add(datHangButton);
 		datHangToolbar.setBackground(customColor); // Thay đổi ở đây
 		topPanel.add(datHangToolbar);
-		
+
 		panelDatHang = new JPanel() {
+			private static final long serialVersionUID = 1L;
+
 			protected void paintComponent(Graphics g) {
 				g.setColor(getBackground());
 				g.fillRect(0, 0, getWidth(), getHeight());
@@ -229,23 +243,23 @@ public class Main_form_manager extends JFrame {
 		JButton btnBan = new JButton("Quản Lý Bàn");
 		btnBan.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnBan.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 			}
 		});
-		
+
 		JButton btnKhachHang = new JButton("Quản Lý Khách Hàng");
 		btnKhachHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnKhachHang.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 			}
 		});
-		
+
 		panelDatHang.add(btnKhachHang);
 		panelDatHang.add(btnBan);
 
@@ -261,7 +275,8 @@ public class Main_form_manager extends JFrame {
 		nhanVienButton.setBackground(new Color(255, 0, 128));
 		nhanVienButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
+				if (panelHangHoa.isVisible() || panelDatHang.isVisible() || panelNhanVien.isVisible()
+						|| panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
 					panelHangHoa.setVisible(false);
 					panelDatHang.setVisible(false);
 					panelNhanVien.setVisible(false);
@@ -275,7 +290,7 @@ public class Main_form_manager extends JFrame {
 		nhanVienToolbar.add(nhanVienButton);
 		nhanVienToolbar.setBackground(customColor);
 		topPanel.add(nhanVienToolbar);
-				
+
 		panelNhanVien = new JPanel() {
 			private static final long serialVersionUID = 1L;
 
@@ -290,28 +305,28 @@ public class Main_form_manager extends JFrame {
 		panelNhanVien.setVisible(false); // tắt/ẩn panel
 		panelNhanVien.setBackground(whiteColor);
 		contentPane.add(panelNhanVien);
-		
+
 		JButton btnNhanVien = new JButton("Quản Lý Nhân Viên");
 		btnNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNhanVien.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				view_QuanLyNhanVien gdqlnv;
 				try {
-					view_QuanLyNhanVien gdqlnv = new view_QuanLyNhanVien();
+					gdqlnv = new view_QuanLyNhanVien();
 					gdqlnv.setLocationRelativeTo(null);
 					gdqlnv.setVisible(true);
 					dispose();
 				} catch (Exception e1) {
+					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-
 			}
-			
+
 		});
 		panelNhanVien.add(btnNhanVien);
-		
+
 		// Thêm toolbar "tài khoản"
 		JToolBar taiKhoanToolbar = new JToolBar();
 		taiKhoanToolbar.setFloatable(false);
@@ -324,7 +339,8 @@ public class Main_form_manager extends JFrame {
 		taiKhoanButton.setBackground(new Color(99, 176, 28));
 		taiKhoanButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
+				if (panelHangHoa.isVisible() || panelDatHang.isVisible() || panelNhanVien.isVisible()
+						|| panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
 					panelHangHoa.setVisible(false);
 					panelDatHang.setVisible(false);
 					panelNhanVien.setVisible(false);
@@ -338,7 +354,7 @@ public class Main_form_manager extends JFrame {
 		taiKhoanToolbar.add(taiKhoanButton);
 		taiKhoanToolbar.setBackground(customColor);
 		topPanel.add(taiKhoanToolbar);
-		
+
 		panelTaiKhoan = new JPanel() {
 			private static final long serialVersionUID = 1L;
 
@@ -353,27 +369,19 @@ public class Main_form_manager extends JFrame {
 		panelTaiKhoan.setVisible(false); // tắt/ẩn panel
 		panelTaiKhoan.setBackground(whiteColor);
 		contentPane.add(panelTaiKhoan);
-		
+
 		JButton btnTaiKhoan = new JButton("Quản Lý Tài Khoản");
 		btnTaiKhoan.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnTaiKhoan.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					view_QuanLyTaiKhoan gdqltk = new view_QuanLyTaiKhoan();
-					gdqltk.setLocationRelativeTo(null);
-					gdqltk.setVisible(true);
-					dispose();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 
 		});
 		panelTaiKhoan.add(btnTaiKhoan);
-		
+
 		// thêm toolbar "thống kê"
 		JToolBar thongKeToolbar = new JToolBar();
 		thongKeToolbar.setFloatable(false);
@@ -386,7 +394,8 @@ public class Main_form_manager extends JFrame {
 		thongKeButton.setBackground(new Color(100, 100, 255));
 		thongKeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
+				if (panelHangHoa.isVisible() || panelDatHang.isVisible() || panelNhanVien.isVisible()
+						|| panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
 					panelHangHoa.setVisible(false);
 					panelDatHang.setVisible(false);
 					panelNhanVien.setVisible(false);
@@ -400,7 +409,7 @@ public class Main_form_manager extends JFrame {
 		thongKeToolbar.add(thongKeButton);
 		thongKeToolbar.setBackground(customColor);
 		topPanel.add(thongKeToolbar);
-		
+
 		panelThongKe = new JPanel() {
 			private static final long serialVersionUID = 1L;
 
@@ -415,61 +424,206 @@ public class Main_form_manager extends JFrame {
 		panelThongKe.setVisible(false); // tắt/ẩn panel
 		panelThongKe.setBackground(whiteColor);
 		contentPane.add(panelThongKe);
-		
+
 		JButton btnThongKeNhanVien = new JButton("Thống Kê Nhân Viên");
 		btnThongKeNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnThongKeNhanVien.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
-			
+
 			}
-			});
-		JButton btnThongKeDoanhThu = new JButton("Thống Kê Doanh Thu"); 
+		});
+		JButton btnThongKeDoanhThu = new JButton("Thống Kê Doanh Thu");
 		btnThongKeDoanhThu.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnThongKeDoanhThu.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			});
-		
+		});
+
 		panelThongKe.add(btnThongKeNhanVien);
 		panelThongKe.add(btnThongKeDoanhThu);
-		
+
 		// Create logout button
 		JToolBar logoutToolBar = new JToolBar();
 		logoutToolBar.setFloatable(false);
 		logoutToolBar.setMargin(new java.awt.Insets(-5, 550, 0, 0));
 		testbutton.Buttontest logoutButton = new Buttontest();
 		logoutButton.setText("Đăng Xuất");
-        logoutButton.setFont(new Font("Open Sans", Font.BOLD, 15));
-        logoutButton.setForeground(SystemColor.text);
-        logoutButton.setRippleColor(new Color(255, 255, 255));
-        logoutButton.setBackground(new Color(226, 110, 110));
-        logoutButton.addActionListener(new ActionListener() {
+		logoutButton.setFont(new Font("Open Sans", Font.BOLD, 15));
+		logoutButton.setForeground(SystemColor.text);
+		logoutButton.setRippleColor(new Color(255, 255, 255));
+		logoutButton.setBackground(new Color(226, 110, 110));
+		logoutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-		        if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất!", null, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-		            Login lg = new Login();
-		            lg.setVisible(true);
-		            lg.setLocationRelativeTo(null);
-		            dispose();
-		        }
+				if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất!", null,
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					Login lg = new Login();
+					lg.setVisible(true);
+					lg.setLocationRelativeTo(null);
+					dispose();
+				}
 			}
 		});
-        logoutToolBar.add(logoutButton);
-        logoutToolBar.setBackground(customColor);
-        topPanel.add(logoutToolBar);
+		logoutToolBar.add(logoutButton);
+		logoutToolBar.setBackground(customColor);
+		topPanel.add(logoutToolBar);
+		
+		JLabel lblQLTK = new JLabel("Quản Lý Tài Khoản");
+		lblQLTK.setForeground(new Color(255, 255, 255));
+		lblQLTK.setFont(new Font("Open Sans", 1, 16));
+		lblQLTK.setBounds(43, 102, 170, 20);
+		contentPane.add(lblQLTK);
 
-        JLabel background = new JLabel("");
+		JLabel lblTenDangNhap = new JLabel("Tên Đăng Nhập:");
+		lblTenDangNhap.setForeground(new Color(255, 255, 255));
+		lblTenDangNhap.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblTenDangNhap.setBounds(17, 139, 130, 21);
+		contentPane.add(lblTenDangNhap);
+
+		JPanel pnlHoTen = new JPanel();
+		pnlHoTen.setBackground(new Color(255, 255, 0));
+		pnlHoTen.setBounds(10, 161, 230, 37);
+		pnlHoTen.setOpaque(false);
+		contentPane.add(pnlHoTen);
+
+		JLabel lblMatKhau = new JLabel("Mật Khẩu:");
+		lblMatKhau.setForeground(new Color(255, 255, 255));
+		lblMatKhau.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblMatKhau.setBounds(17, 209, 130, 21);
+		contentPane.add(lblMatKhau);
+
+		JPanel pnlSDT = new JPanel();
+		pnlSDT.setOpaque(false);
+		pnlSDT.setBackground(Color.YELLOW);
+		pnlSDT.setBounds(10, 241, 230, 37);
+		contentPane.add(pnlSDT);
+
+		txtMK = new JTextField();
+		txtMK.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtMK.setColumns(16);
+		pnlSDT.add(txtMK);
+
+		// Thêm chúng vào ButtonGroup
+		ButtonGroup buttonGroup = new ButtonGroup();
+
+		// Add JTextField below JCheckBox
+		txtTenDN = new JTextField();
+		txtTenDN.setFont(new Font("Open Sans", 0, 16));
+		txtTenDN.setColumns(16); // You can adjust the column count based on your requirement
+		pnlHoTen.add(txtTenDN);
+
+		txtTimKiem = new JTextField();
+		txtTimKiem.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtTimKiem.setColumns(16);
+		txtTimKiem.setBounds(871, 99, 214, 30);
+		contentPane.add(txtTimKiem);
+
+		btntimkiem = new JButton("");
+		btntimkiem.setIcon(new ImageIcon(view_QuanLyTaiKhoan.class.getResource("/image/search.png")));
+		btntimkiem.setBounds(1090, 99, 40, 30);
+		contentPane.add(btntimkiem);
+
+		// Khởi tạo các nút
+		btnThem = new JButton("Thêm");
+		btnXoa = new JButton("Xóa");
+		btnSua = new JButton("Sửa");
+		btnLamMoi = new JButton("Làm mới");
+
+		// Đặt vị trí cho các nút
+		btnThem.setBounds(250, 99, 100, 30);
+		btnXoa.setBounds(360, 99, 100, 30);
+		btnSua.setBounds(470, 99, 100, 30);
+		btnLamMoi.setBounds(580, 99, 100, 30);
+		// Thêm các nút vào contentPane
+		contentPane.add(btnThem);
+		contentPane.add(btnXoa);
+		contentPane.add(btnSua);
+		contentPane.add(btnLamMoi);
+
+		// Khởi tạo DefaultTableModel với các cột
+		String[] columnNames = { "Tên Đăng Nhập", "Mật Khẩu"}; // Thay đổi tên cột tùy ý
+		tableModel = new DefaultTableModel(columnNames, 0);
+
+		// Khởi tạo JTable với DefaultTableModel
+		table = new JTable(tableModel);
+		table.getColumnModel().getColumn(1).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
+		
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int r = table.getSelectedRow();
+				txtTenDN.setText(tableModel.getValueAt(r,0).toString());
+				txtMK.setText(tableModel.getValueAt(r,1).toString());
+			}
+		});
+		
+		// theo ý muốn
+
+		// Tạo JScrollPane để thêm bảng vào để có thể cuộn
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setBounds(250, 140, 900, 469); // Điều chỉnh tọa độ và kích thước của bảng
+
+		// Thêm bảng và JScrollPane vào contentPane
+		contentPane.add(scrollPane);
+
+
+
+		// add su kien
+		btnThem.addActionListener(this);
+		btnXoa.addActionListener(this);
+		btnSua.addActionListener(this);
+		btnLamMoi.addActionListener(this);
+		btntimkiem.addActionListener(this);
+		
+
+		JLabel background = new JLabel("");
 		background.setHorizontalAlignment(SwingConstants.CENTER);
-		background.setIcon(new ImageIcon(Main_form_manager.class.getResource("/image/bgCF.jpg")));
+		background.setIcon(new ImageIcon(view_QuanLyTaiKhoan.class.getResource("/image/bgCF.jpg")));
 		background.setBounds(0, 0, 1162, 613);
 		contentPane.add(background);
+		
+		
+		loadData();
+	}
+	
+	private void loadData() throws SQLException {
+		for(TaiKhoan tk : list_TaiKhoan.getAll()) {
+			tableModel.addRow(new Object[] {tk.getUserName().getMaNV(),tk.getPassWord()});
+		}
+	}
+	
+	private void initComponents() {
+		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		addWindowListener(new java.awt.event.WindowAdapter() {
+			public void windowClosing(java.awt.event.WindowEvent evt) {
+				formWindowClosing(evt);
+			}
+		});
+
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+		layout.setHorizontalGroup(
+				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 400, Short.MAX_VALUE));
+		layout.setVerticalGroup(
+				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 300, Short.MAX_VALUE));
+
+		pack();
+	}
+	private void formWindowClosing(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_formWindowClosing
+		Main_form_manager gdql = new Main_form_manager();
+		gdql.setLocationRelativeTo(null);
+		gdql.setVisible(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 }

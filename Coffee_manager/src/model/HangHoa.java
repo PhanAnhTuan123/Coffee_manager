@@ -1,17 +1,22 @@
 package model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class HangHoa {
 	private String maHH;
 	private String tenHH;
-	private Integer soLuong;
 	private Double gia;
 
-	public HangHoa(String maHH, String tenHH, Integer soLuong, Double gia) {
+	public HangHoa(String maHH, String tenHH, Double gia) {
 		super();
 		this.maHH = maHH;
 		this.tenHH = tenHH;
-		this.soLuong = soLuong;
 		this.gia = gia;
+	}
+
+	public HangHoa() {
+		super();
 	}
 
 	public String getMaHH() {
@@ -30,14 +35,6 @@ public class HangHoa {
 		this.tenHH = tenHH;
 	}
 
-	public Integer getSoLuong() {
-		return soLuong;
-	}
-
-	public void setSoLuong(Integer soLuong) {
-		this.soLuong = soLuong;
-	}
-
 	public Double getGia() {
 		return gia;
 	}
@@ -46,9 +43,19 @@ public class HangHoa {
 		this.gia = gia;
 	}
 
+	public static HangHoa getFromResultSet(ResultSet rs) throws SQLException {
+		HangHoa e = new HangHoa();
+		e.setMaHH(rs.getString("maHH"));
+		e.setTenHH(rs.getString("TenHH"));
+		e.setGia(rs.getDouble("Gia"));
+		return e;
+	}
+
 	@Override
 	public String toString() {
-		return "HangHoa [maHH=" + maHH + ", tenHH=" + tenHH + ", soLuong=" + soLuong + ", gia=" + gia;
+		return "HangHoa [maHH=" + maHH + ", tenHH=" + tenHH + ", gia=" + gia + "]";
 	}
+
+	
 
 }
