@@ -36,11 +36,14 @@ import javax.swing.table.DefaultTableModel;
 
 import db.ConnectDB;
 import list.List_Ban;
+import list.List_HangHoa;
 import list.List_NhanVien;
 import model.Ban;
+import model.HangHoa;
 import model.NhanVien;
 import runapp.Login;
 import service.Ban_DAO;
+import service.HangHoa_DAO;
 import testbutton.Buttontest;
 import view.QuanLy.Main_form_manager;
 import view.QuanLy.view_QuanLyNhanVien;
@@ -71,6 +74,9 @@ public class view_hoaDon extends JFrame implements ActionListener{
 	private JTextField txtChietKhau;
 	private JTextField txtTongTien;
 	private JTextField txtSoLuong;
+	private HangHoa_DAO hanghoa_dao;
+	private List_HangHoa list_hangHoa;
+	private JTextField txtMaHangHoa;
 	/**
 	 * Launch the application.
 	 */
@@ -116,6 +122,9 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		}
 		ban_dao = new Ban_DAO();
 		list_Ban = new List_Ban();
+		hanghoa_dao = new HangHoa_DAO();
+		list_hangHoa = new List_HangHoa();
+		
 		
 //		initComponents();
 		setResizable(false);
@@ -538,16 +547,16 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		btnSua.setBackground(new Color(0, 255, 255));
 
 		// Đặt vị trí cho các nút
-		btnThem.setBounds(404, 305, 100, 30);
-		btnXoa.setBounds(514, 305, 100, 30);
-		btnSua.setBounds(624, 305, 100, 30);
+		btnThem.setBounds(610, 305, 100, 30);
+		btnXoa.setBounds(732, 305, 100, 30);
+		btnSua.setBounds(857, 305, 100, 30);
 		// Thêm các nút vào contentPane
 		contentPane.add(btnThem);
 		contentPane.add(btnXoa);
 		contentPane.add(btnSua);
 
 		// Khởi tạo DefaultTableModel với các cột
-		String[] columnNames = {"Mã Bàn","Tên Bàn"}; // Thay đổi tên cột tùy ý
+		String[] columnNames = {"Mã","Tên","Giá","Số Lượng","Thành Tiền"}; // Thay đổi tên cột tùy ý
 		tableModel = new DefaultTableModel(columnNames, 0);
 
 		// Khởi tạo JTable với DefaultTableModel
@@ -572,10 +581,14 @@ public class view_hoaDon extends JFrame implements ActionListener{
 ////					cboxChucVu.setSelectedIndex(1);
 //				}
 				int r = tableShowSP.getSelectedRow();
-				txtMaHD.setText(tableModel.getValueAt(r, 1).toString());
-				tempMaBan = tableModel.getValueAt(r, 0).toString();
+				btnXoa.setEnabled(true);
+				btnThem.setEnabled(false);
+				btnSua.setEnabled(true);
+				txtMaHangHoa.setText(tableModel.getValueAt(r, 0).toString());
+				txtSoLuong.setText(tableModel.getValueAt(r, 3).toString());
 				btnSua.setEnabled(true);
 				btnXoa.setEnabled(true);
+				
 			}
 		});
 		
@@ -589,13 +602,24 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		contentPane.add(scrollPane);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.addMouseListener(new MouseAdapter() {
+			
+		});
 		scrollPane_1.setBounds(250, 161, 900, 136);
 		contentPane.add(scrollPane_1);
-		String[] Column2 = {"Mã Bàn","Tên Bàn"}; // Thay đổi tên cột tùy ý
+		String[] Column2 = {"Mã","Tên","Giá"}; // Thay đổi tên cột tùy ý
 		tableModelSanPham = new DefaultTableModel(Column2, 0);
 
 		// Khởi tạo JTable với DefaultTableModel
 		table_chonSP = new JTable(tableModelSanPham);
+		table_chonSP.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int n = table_chonSP.getSelectedRow();
+				btnThem.setEnabled(true);
+				txtMaHangHoa.setText(tableModelSanPham.getValueAt(n, 0).toString());
+			}
+		});
 		table_chonSP.getColumnModel().getColumn(1).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
 				
 //		table_1 = new JTable();
@@ -716,14 +740,14 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		JLabel lblSoLuong = new JLabel("Số Lượng:");
 		lblSoLuong.setForeground(Color.WHITE);
 		lblSoLuong.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lblSoLuong.setBounds(250, 307, 88, 21);
+		lblSoLuong.setBounds(421, 307, 88, 21);
 		contentPane.add(lblSoLuong);
 		
 		txtSoLuong = new JTextField();
 		txtSoLuong.setText("");
 		txtSoLuong.setFont(new Font("Dialog", Font.PLAIN, 16));
 		txtSoLuong.setColumns(16);
-		txtSoLuong.setBounds(331, 307, 63, 27);
+		txtSoLuong.setBounds(504, 304, 63, 27);
 		contentPane.add(txtSoLuong);
 		
 		JLabel lblTimKiem = new JLabel("Tìm Kiếm Sản Phẩm");
@@ -741,6 +765,20 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		JComboBox combo_category = new JComboBox();
 		combo_category.setBounds(343, 133, 161, 24);
 		contentPane.add(combo_category);
+		
+		JLabel lblHangHoa = new JLabel("Hàng Hóa:");
+		lblHangHoa.setForeground(Color.WHITE);
+		lblHangHoa.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblHangHoa.setBounds(250, 307, 88, 21);
+		contentPane.add(lblHangHoa);
+		
+		txtMaHangHoa = new JTextField();
+		txtMaHangHoa.setText("");
+		txtMaHangHoa.setEnabled(false);
+		txtMaHangHoa.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtMaHangHoa.setColumns(16);
+		txtMaHangHoa.setBounds(335, 304, 76, 27);
+		contentPane.add(txtMaHangHoa);
 		
 		
 		
@@ -762,7 +800,7 @@ public class view_hoaDon extends JFrame implements ActionListener{
 //		
 		
 		loadData();
-//		refresh();
+		refresh();
 	}
 	
 	private void loadData() throws SQLException {
@@ -776,12 +814,13 @@ public class view_hoaDon extends JFrame implements ActionListener{
 //			}
 //			tableModel.addRow(new Object[] {nv.getMaNV(),nv.getTenNV(),nv.getDiaChi(),nv.getSdt(),nv.getChucVu(),gioiTinh});
 //		}
-		tableModel.setRowCount(0);
-		for (Ban item : list_Ban.getAll()) {
-			tableModel.addRow(new Object[] {
-					item.getMaBan(),
-					item.getTenBan()
-			});
+		tableModelSanPham.setRowCount(0);
+		for (HangHoa item : list_hangHoa.getAll()) {
+				tableModelSanPham.addRow(new Object[] {
+						item.getMaHH(),
+						item.getTenHH(),
+						item.getGia()
+				});
 		}
 	}
 	public void loadByName() {
@@ -822,6 +861,70 @@ public class view_hoaDon extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(btnThem)) {
+			System.out.println("Them!!");
+			
+			addTableHangHoa();
+		}
+		if(e.getSource().equals(btnXoa)) {
+			removetablehangHoa();
+		}
+		if(e.getSource().equals(btnSua)) {
+			updateTableHangHoa();
+		}
+	}
+	private void updateTableHangHoa() {
+		int n = tableShowSP.getSelectedRow();
+		
+		tableModel.setValueAt(txtSoLuong.getText(), n,3);
+		tableModel.setValueAt(Integer.parseInt(txtSoLuong.getText())*
+				Double.parseDouble(tableModel.getValueAt(n, 2).toString())
+				, n, 4);
+		JOptionPane.showMessageDialog(null, "Updated!!");
+		refresh();
+	}
+	private void removetablehangHoa() {
+		int n = tableShowSP.getSelectedRow();
+		tableModel.removeRow(n);
+		JOptionPane.showMessageDialog(null, "Deleted!!");
+		refresh();
+		
+	}
+	private void refresh() {
+		btnThem.setEnabled(false);
+		btnSua.setEnabled(false);
+		btnXoa.setEnabled(false);
+		txtSoLuong.setText("");
+		txtMaHangHoa.setText("");
+		txtTimKiem.setText("");
+	}
+	public void addTableHangHoa() {
+		if(txtSoLuong.getText().equalsIgnoreCase("")) {
+			JOptionPane.showMessageDialog(null, "Vui lòng nhập số lượng!");
+		}else {
+			
+		
+		try {
+			HangHoa hh = list_hangHoa.get(Integer.parseInt(txtMaHangHoa.getText()));
+			int soLuong = Integer.parseInt(txtSoLuong.getText());
+			tableModel.addRow(new Object[] {
+					hh.getMaHH(),
+					hh.getTenHH(),
+					hh.getGia(),
+					soLuong,
+					hh.getGia()*soLuong
+			});
+			JOptionPane.showMessageDialog(null, "Added!!");
+			refresh();
+			
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
 		
 	}
 	
