@@ -9,20 +9,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -32,13 +32,11 @@ import javax.swing.table.DefaultTableModel;
 
 import db.ConnectDB;
 import list.List_HangHoa;
-import list.List_NhanVien;
 import model.HangHoa;
-import model.NhanVien;
 import runapp.Login;
 import testbutton.Buttontest;
 
-public class view_QuanLyHangHoa extends JFrame implements ActionListener{
+public class view_QuanLyHangHoa extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JButton btnThem, btnXoa, btnSua, btnLamMoi, btntimkiem;
@@ -57,7 +55,8 @@ public class view_QuanLyHangHoa extends JFrame implements ActionListener{
 
 	/**
 	 * Launch the application.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 		try {
@@ -80,10 +79,10 @@ public class view_QuanLyHangHoa extends JFrame implements ActionListener{
 			java.util.logging.Logger.getLogger(view_QuanLyHangHoa.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		}
-		
+
 		try {
 			ConnectDB.getInstance().connect();
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		view_QuanLyHangHoa frame = new view_QuanLyHangHoa();
@@ -92,7 +91,8 @@ public class view_QuanLyHangHoa extends JFrame implements ActionListener{
 
 	/**
 	 * Create the frame.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public view_QuanLyHangHoa() throws Exception {
 		initComponents();
@@ -483,7 +483,7 @@ public class view_QuanLyHangHoa extends JFrame implements ActionListener{
 		logoutToolBar.add(logoutButton);
 		logoutToolBar.setBackground(customColor);
 		topPanel.add(logoutToolBar);
-		
+
 		JLabel lblQLHH = new JLabel("Quản Lý Hàng Hóa\r\n");
 		lblQLHH.setForeground(new Color(255, 255, 255));
 		lblQLHH.setFont(new Font("Open Sans", 1, 16));
@@ -541,6 +541,7 @@ public class view_QuanLyHangHoa extends JFrame implements ActionListener{
 
 		// Add JTextField below JCheckBox
 		txtMaHH = new JTextField();
+		txtMaHH.setEnabled(false);
 		txtMaHH.setFont(new Font("Open Sans", 0, 16));
 		txtMaHH.setColumns(16); // You can adjust the column count based on your requirement
 		pnlHoTen.add(txtMaHH);
@@ -574,23 +575,25 @@ public class view_QuanLyHangHoa extends JFrame implements ActionListener{
 		contentPane.add(btnLamMoi);
 
 		// Khởi tạo DefaultTableModel với các cột
-		String[] columnNames = { "Mã Hàng Hóa", "Tên Hàng Hóa","Giá"}; // Thay đổi tên cột tùy ý
+		String[] columnNames = { "Mã Hàng Hóa", "Tên Hàng Hóa", "Giá" }; // Thay đổi tên cột tùy ý
 		tableModel = new DefaultTableModel(columnNames, 0);
 
 		// Khởi tạo JTable với DefaultTableModel
 		table = new JTable(tableModel);
 		table.getColumnModel().getColumn(2).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
-		
+
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int r = table.getSelectedRow();
-				txtMaHH.setText(tableModel.getValueAt(r,0).toString());
-				txtTenHH.setText(tableModel.getValueAt(r,1).toString());
-				txtGia.setText(tableModel.getValueAt(r,2).toString());
+				txtMaHH.setText(tableModel.getValueAt(r, 0).toString());
+				txtTenHH.setText(tableModel.getValueAt(r, 1).toString());
+				txtGia.setText(tableModel.getValueAt(r, 2).toString());
+				btnSua.setEnabled(true);
+				btnXoa.setEnabled(true);
 			}
 		});
-		
+
 		// theo ý muốn
 
 		// Tạo JScrollPane để thêm bảng vào để có thể cuộn
@@ -600,32 +603,29 @@ public class view_QuanLyHangHoa extends JFrame implements ActionListener{
 		// Thêm bảng và JScrollPane vào contentPane
 		contentPane.add(scrollPane);
 
-
-
 		// add su kien
 		btnThem.addActionListener(this);
 		btnXoa.addActionListener(this);
 		btnSua.addActionListener(this);
 		btnLamMoi.addActionListener(this);
 		btntimkiem.addActionListener(this);
-		
 
 		JLabel background = new JLabel("");
 		background.setHorizontalAlignment(SwingConstants.CENTER);
 		background.setIcon(new ImageIcon(view_QuanLyHangHoa.class.getResource("/image/bgCF.jpg")));
 		background.setBounds(0, 0, 1162, 613);
 		contentPane.add(background);
-		
-		
+		refresh();
 		loadData();
 	}
-	
+
 	private void loadData() throws SQLException {
-		for(HangHoa hh : list_HangHoa.getAll()) {
-			tableModel.addRow(new Object[] {hh.getMaHH(),hh.getTenHH(),hh.getGia()});
+		tableModel.setRowCount(0);
+		for (HangHoa hh : list_HangHoa.getAll()) {
+			tableModel.addRow(new Object[] { hh.getMaHH(), hh.getTenHH(), hh.getGia() });
 		}
 	}
-	
+
 	private void initComponents() {
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		addWindowListener(new java.awt.event.WindowAdapter() {
@@ -643,15 +643,92 @@ public class view_QuanLyHangHoa extends JFrame implements ActionListener{
 
 		pack();
 	}
+
 	private void formWindowClosing(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_formWindowClosing
 		Main_form_manager gdql = new Main_form_manager();
 		gdql.setLocationRelativeTo(null);
 		gdql.setVisible(true);
 	}
 
+	public void loadByName() {
+		String ten = txtTimKiem.getText();
+		ArrayList<HangHoa> tempList = new ArrayList<HangHoa>();
+		tempList = list_HangHoa.findByName(ten);
+		tableModel.setRowCount(0);
+		for (HangHoa item : tempList) {
+			tableModel.addRow(new Object[] { item.getMaHH(), item.getTenHH(), item.getGia() });
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (e.getSource().equals(btnThem)) {
+			if (txtTenHH.getText().isEmpty() || txtGia.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(this, "Vui lòng nhập thông tin đầy đủ");
+			} else {
+				HangHoa hangHoa = new HangHoa();
+				hangHoa.setMaHH(list_HangHoa.sinhMaHH());
+				hangHoa.setTenHH(txtTenHH.getText());
+				hangHoa.setGia(Double.parseDouble(txtGia.getText()));
+				try {
+					list_HangHoa.save(hangHoa);
+					loadData();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		if (e.getSource().equals(btnSua)) {
+			HangHoa hangHoa = new HangHoa();
+			hangHoa.setMaHH(txtMaHH.getText());
+			hangHoa.setTenHH(txtTenHH.getText());
+			hangHoa.setGia(Double.parseDouble(txtGia.getText()));
+			try {
+				list_HangHoa.update(hangHoa);
+				loadData();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Sửa thành công!!");
+		}
+		if (e.getSource().equals(btnXoa)) {
+			int r = table.getSelectedRow();
+			HangHoa hangHoa = new HangHoa();
+			hangHoa.setMaHH(tableModel.getValueAt(r, 0).toString());
+			try {
+				list_HangHoa.delete(hangHoa);
+				loadData();
+				refresh();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Xóa thành công!!");
+		}
+		if (e.getSource().equals(btntimkiem)) {
+//			String ten = txtTimKiem.getText();
+			loadByName();
+
+		}
+		if (e.getSource().equals(btnLamMoi)) {
+			try {
+				loadData();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		refresh();
+	}
+
+	public void refresh() {
+		txtMaHH.setText("");
+		txtTenHH.setText("");
+		txtGia.setText("");
+		txtTimKiem.setText("");
+		btnXoa.setEnabled(false);
+		btnSua.setEnabled(false);
+		btnThem.setEnabled(true);
+
 	}
 }
