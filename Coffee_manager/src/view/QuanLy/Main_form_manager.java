@@ -11,12 +11,16 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+
+import db.ConnectDB;
 import runapp.Login;
 import testbutton.Buttontest;
 import javax.swing.JLabel;
@@ -38,8 +42,9 @@ public class Main_form_manager extends JFrame {
 	
 	/**
 	 * Launch the application.
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
@@ -59,6 +64,11 @@ public class Main_form_manager extends JFrame {
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
 			java.util.logging.Logger.getLogger(Main_form_manager.class.getName()).log(java.util.logging.Level.SEVERE, null,
 					ex);
+		}
+		try {
+			ConnectDB.getInstance().connect();
+		}catch(SQLException e) {
+			e.printStackTrace();
 		}
 		Main_form_manager frame = new Main_form_manager();
 		frame.setVisible(true);
