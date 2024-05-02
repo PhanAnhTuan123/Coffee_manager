@@ -45,17 +45,18 @@ import testbutton.Buttontest;
 import view.QuanLy.Main_form_manager;
 import view.QuanLy.view_QuanLyNhanVien;
 
-public class view_QuanLyBan extends JFrame implements ActionListener{
+public class view_hoaDon extends JFrame implements ActionListener{
 	private String tempMaBan;
 	private Ban_DAO ban_dao;
 	private List_Ban list_Ban;
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JButton btnThem, btnXoa, btnSua, btnLamMoi, btntimkiem;
+	private JButton btnThem, btnXoa, btnSua, btntimkiem;
 	private JLabel lbltennv;
-	private JTable table;
+	private JTable tableShowSP;
 	private DefaultTableModel tableModel;
-	private JTextField txtSDT, txtDiaChi, txtTimKiem, txtTenBan;
+	private DefaultTableModel tableModelSanPham;
+	private JTextField txtSDT, txtDiaChi, txtTimKiem, txtMaHD;
 	Connection con = null;
 	ResultSet rs = null;
 	PreparedStatement pst = null;
@@ -64,6 +65,12 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 	Color whiteColor = new Color(255, 255, 255, 0);
 	private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh NV
 	private List_NhanVien list_nv = new List_NhanVien();
+	private JTable table_chonSP;
+	private JTextField txtKhachHang;
+	private JTextField txtTien;
+	private JTextField txtChietKhau;
+	private JTextField txtTongTien;
+	private JTextField txtSoLuong;
 	/**
 	 * Launch the application.
 	 */
@@ -94,14 +101,14 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		view_QuanLyBan frame = new view_QuanLyBan();
+		view_hoaDon frame = new view_hoaDon();
 		frame.setVisible(true);
 	}
 	/**
 	 * Create the frame.
 	 * @throws SQLException 
 	 */
-	public view_QuanLyBan() throws SQLException {
+	public view_hoaDon() throws SQLException {
 		try {
 			ConnectDB.getInstance().connect();
 		}catch (Exception e) {
@@ -110,11 +117,12 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 		ban_dao = new Ban_DAO();
 		list_Ban = new List_Ban();
 		
-		initComponents();
+//		initComponents();
 		setResizable(false);
 		setBackground(Color.WHITE);
 		setTitle("Giao Diện Quản Lý Bàn");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		tableModelSanPham = new DefaultTableModel();
 		this.setLocationRelativeTo(null);
 		setBounds(100, 100, 1168, 650);
 		contentPane = new JPanel();
@@ -482,13 +490,13 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 		logoutToolBar.setBackground(customColor);
 		topPanel.add(logoutToolBar);
 		
-		JLabel lblQLKH = new JLabel("Quản Lý Bàn");
+		JLabel lblQLKH = new JLabel("Quản Lý Hóa Đơn");
 		lblQLKH.setForeground(new Color(255, 255, 255));
 		lblQLKH.setFont(new Font("Open Sans", 1, 16));
 		lblQLKH.setBounds(43, 102, 170, 20);
 		contentPane.add(lblQLKH);
 
-		JLabel lblHoTen = new JLabel("Nhập tên bàn:");
+		JLabel lblHoTen = new JLabel("Mã Hóa Đơn:");
 		lblHoTen.setForeground(new Color(255, 255, 255));
 		lblHoTen.setFont(new Font("Dialog", Font.PLAIN, 16));
 		lblHoTen.setBounds(10, 132, 130, 21);
@@ -504,48 +512,49 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 		ButtonGroup buttonGroup = new ButtonGroup();
 
 		// Add JTextField below JCheckBox
-		txtTenBan = new JTextField();
-		txtTenBan.setFont(new Font("Open Sans", 0, 16));
-		txtTenBan.setColumns(16); // You can adjust the column count based on your requirement
-		pnlHoTen.add(txtTenBan);
+		txtMaHD = new JTextField();
+		txtMaHD.setFont(new Font("Open Sans", 0, 16));
+		txtMaHD.setEnabled(false);
+		txtMaHD.setColumns(16); // You can adjust the column count based on your requirement
+		pnlHoTen.add(txtMaHD);
 
 		txtTimKiem = new JTextField();
 		txtTimKiem.setFont(new Font("Dialog", Font.PLAIN, 16));
 		txtTimKiem.setColumns(16);
-		txtTimKiem.setBounds(871, 99, 214, 30);
+		txtTimKiem.setBounds(886, 128, 214, 30);
 		contentPane.add(txtTimKiem);
 
 		btntimkiem = new JButton("");
 		btntimkiem.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/search.png")));
-		btntimkiem.setBounds(1090, 99, 40, 30);
+		btntimkiem.setBounds(1110, 128, 40, 30);
 		contentPane.add(btntimkiem);
 
 		// Khởi tạo các nút
 		btnThem = new JButton("Thêm");
+		btnThem.setBackground(new Color(50, 205, 50));
 		btnXoa = new JButton("Xóa");
+		btnXoa.setBackground(new Color(255, 140, 0));
 		btnSua = new JButton("Sửa");
-		btnLamMoi = new JButton("Làm mới");
+		btnSua.setBackground(new Color(0, 255, 255));
 
 		// Đặt vị trí cho các nút
-		btnThem.setBounds(250, 99, 100, 30);
-		btnXoa.setBounds(360, 99, 100, 30);
-		btnSua.setBounds(470, 99, 100, 30);
-		btnLamMoi.setBounds(580, 99, 100, 30);
+		btnThem.setBounds(404, 305, 100, 30);
+		btnXoa.setBounds(514, 305, 100, 30);
+		btnSua.setBounds(624, 305, 100, 30);
 		// Thêm các nút vào contentPane
 		contentPane.add(btnThem);
 		contentPane.add(btnXoa);
 		contentPane.add(btnSua);
-		contentPane.add(btnLamMoi);
 
 		// Khởi tạo DefaultTableModel với các cột
 		String[] columnNames = {"Mã Bàn","Tên Bàn"}; // Thay đổi tên cột tùy ý
 		tableModel = new DefaultTableModel(columnNames, 0);
 
 		// Khởi tạo JTable với DefaultTableModel
-		table = new JTable(tableModel);
-		table.getColumnModel().getColumn(1).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
+		tableShowSP = new JTable(tableModel);
+		tableShowSP.getColumnModel().getColumn(1).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
 		
-		table.addMouseListener(new MouseAdapter() {
+		tableShowSP.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 //				int r = table.getSelectedRow();
@@ -562,8 +571,8 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 //				}else {
 ////					cboxChucVu.setSelectedIndex(1);
 //				}
-				int r = table.getSelectedRow();
-				txtTenBan.setText(tableModel.getValueAt(r, 1).toString());
+				int r = tableShowSP.getSelectedRow();
+				txtMaHD.setText(tableModel.getValueAt(r, 1).toString());
 				tempMaBan = tableModel.getValueAt(r, 0).toString();
 				btnSua.setEnabled(true);
 				btnXoa.setEnabled(true);
@@ -573,31 +582,187 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 		// theo ý muốn
 
 		// Tạo JScrollPane để thêm bảng vào để có thể cuộn
-		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBounds(250, 140, 900, 469); // Điều chỉnh tọa độ và kích thước của bảng
+		JScrollPane scrollPane = new JScrollPane(tableShowSP);
+		scrollPane.setBounds(250, 347, 900, 169); // Điều chỉnh tọa độ và kích thước của bảng
 
 		// Thêm bảng và JScrollPane vào contentPane
 		contentPane.add(scrollPane);
 
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(250, 161, 900, 136);
+		contentPane.add(scrollPane_1);
+		String[] Column2 = {"Mã Bàn","Tên Bàn"}; // Thay đổi tên cột tùy ý
+		tableModelSanPham = new DefaultTableModel(Column2, 0);
+
+		// Khởi tạo JTable với DefaultTableModel
+		table_chonSP = new JTable(tableModelSanPham);
+		table_chonSP.getColumnModel().getColumn(1).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
+				
+//		table_1 = new JTable();
+		table_chonSP.getColumnModel().getColumn(1).setPreferredWidth(50);
+		scrollPane_1.setViewportView(table_chonSP);
+		
+		JLabel lblMKhchHng = new JLabel("Mã Khách Hàng");
+		lblMKhchHng.setForeground(Color.WHITE);
+		lblMKhchHng.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblMKhchHng.setBounds(10, 215, 130, 21);
+		contentPane.add(lblMKhchHng);
+		
+		txtKhachHang = new JTextField();
+		txtKhachHang.setText("");
+		txtKhachHang.setEnabled(false);
+		txtKhachHang.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtKhachHang.setColumns(16);
+		txtKhachHang.setBounds(20, 246, 161, 27);
+		contentPane.add(txtKhachHang);
+		
 
 
-		// add su kien
+		
+		
+		
+		
+
+		
+		JLabel lblTng = new JLabel("Tổng Tiền:");
+		lblTng.setForeground(Color.WHITE);
+		lblTng.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblTng.setBounds(10, 313, 130, 21);
+		contentPane.add(lblTng);
+		
+		txtTien = new JTextField();
+		txtTien.setText("");
+		txtTien.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtTien.setColumns(16);
+		txtTien.setBounds(20, 344, 220, 27);
+		txtTien.setEnabled(false);
+		contentPane.add(txtTien);
+		
+		
+		
+		
+	
+		
+		JLabel lblTng_1 = new JLabel("Chiết Khấu");
+		lblTng_1.setForeground(Color.WHITE);
+		lblTng_1.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblTng_1.setBounds(10, 405, 130, 21);
+		contentPane.add(lblTng_1);
+		
+		txtChietKhau = new JTextField();
+		txtChietKhau.setText("");
+		txtChietKhau.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtChietKhau.setColumns(16);
+		txtChietKhau.setBounds(20, 436, 220, 27);
+		txtChietKhau.setEnabled(false);
+		contentPane.add(txtChietKhau);
+		
+		JLabel lblTng_2 = new JLabel("Tổng Tiền:");
+		lblTng_2.setForeground(Color.WHITE);
+		lblTng_2.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblTng_2.setBounds(10, 506, 130, 21);
+		contentPane.add(lblTng_2);
+		
+		txtTongTien = new JTextField();
+		txtTongTien.setText("");
+		txtTongTien.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtTongTien.setColumns(16);
+		txtTongTien.setBounds(20, 539, 220, 27);
+		txtTongTien.setEnabled(false);
+		contentPane.add(txtTongTien);
+		
+		Buttontest btnDatHang = new Buttontest();
+		btnDatHang.setText("Đặt Hàng");
+		btnDatHang.setRippleColor(Color.WHITE);
+		btnDatHang.setForeground(SystemColor.text);
+		btnDatHang.setFont(new Font("Dialog", Font.BOLD, 15));
+		btnDatHang.setBackground(new Color(46, 139, 87));
+		btnDatHang.setBounds(986, 528, 144, 56);
+		contentPane.add(btnDatHang);
+		
+		Buttontest btnHuy = new Buttontest();
+		btnHuy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnHuy.setText("Hủy Bỏ");
+		btnHuy.setRippleColor(Color.WHITE);
+		btnHuy.setForeground(SystemColor.text);
+		btnHuy.setFont(new Font("Dialog", Font.BOLD, 15));
+		btnHuy.setBackground(new Color(255, 0, 0));
+		btnHuy.setBounds(696, 528, 144, 56);
+		contentPane.add(btnHuy);
+		
+		Buttontest btnTaoMoi = new Buttontest();
+		btnTaoMoi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnTaoMoi.setText("Tạo Mới");
+		btnTaoMoi.setRippleColor(Color.WHITE);
+		btnTaoMoi.setForeground(SystemColor.text);
+		btnTaoMoi.setFont(new Font("Dialog", Font.BOLD, 15));
+		btnTaoMoi.setBackground(new Color(0, 255, 255));
+		btnTaoMoi.setBounds(842, 528, 144, 56);
+		contentPane.add(btnTaoMoi);
+		
+
+		JButton btnTimKhachHang = new JButton("");
+		
+		btnTimKhachHang.setBounds(191, 246, 40, 30);
+		contentPane.add(btnTimKhachHang);
+		btnTimKhachHang.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/search.png")));
+		
+		JLabel lblSoLuong = new JLabel("Số Lượng:");
+		lblSoLuong.setForeground(Color.WHITE);
+		lblSoLuong.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblSoLuong.setBounds(250, 307, 88, 21);
+		contentPane.add(lblSoLuong);
+		
+		txtSoLuong = new JTextField();
+		txtSoLuong.setText("");
+		txtSoLuong.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtSoLuong.setColumns(16);
+		txtSoLuong.setBounds(331, 307, 63, 27);
+		contentPane.add(txtSoLuong);
+		
+		JLabel lblTimKiem = new JLabel("Tìm Kiếm Sản Phẩm");
+		lblTimKiem.setForeground(Color.WHITE);
+		lblTimKiem.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblTimKiem.setBounds(706, 132, 170, 21);
+		contentPane.add(lblTimKiem);
+		
+		JLabel lblDanhMc = new JLabel("Danh Mục ");
+		lblDanhMc.setForeground(Color.WHITE);
+		lblDanhMc.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblDanhMc.setBounds(250, 132, 88, 26);
+		contentPane.add(lblDanhMc);
+		
+		JComboBox combo_category = new JComboBox();
+		combo_category.setBounds(343, 133, 161, 24);
+		contentPane.add(combo_category);
+		
+		
+		
 		btnThem.addActionListener(this);
 		btnXoa.addActionListener(this);
 		btnSua.addActionListener(this);
-		btnLamMoi.addActionListener(this);
 		btntimkiem.addActionListener(this);
+		btnTimKhachHang.addActionListener(this);
+		btnHuy.addActionListener(this);
+		btnDatHang.addActionListener(this);
+		btnTaoMoi.addActionListener(this);
 		
 
 		JLabel background = new JLabel("");
 		background.setHorizontalAlignment(SwingConstants.CENTER);
 		background.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/bgCF.jpg")));
-		background.setBounds(0, 0, 1162, 613);
+		background.setBounds(0, 5, 1162, 613);
 		contentPane.add(background);
-		
+//		
 		
 		loadData();
-		refresh();
+//		refresh();
 	}
 	
 	private void loadData() throws SQLException {
@@ -657,85 +822,8 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
-
-		if(e.getSource().equals(btnThem)) {
-		if(validTenBan()) {
-			Ban ban = new Ban();
-			ban.setMaBan(ban_dao.sinhMaBan());
-			ban.setTenBan(txtTenBan.getText());
-			try {
-				ban_dao.save(ban);
-				loadData();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}else {
-			JOptionPane.showMessageDialog(null, "Vui lòng điền thông tin!!");
-		}
-//			System.out.println("Them!!");
-			
-		}
-		if(e.getSource().equals(btnSua)) {
-			System.out.println("Sua");
-			Ban ban = new Ban();
-			ban.setMaBan(tempMaBan);
-			ban.setTenBan(txtTenBan.getText());
-			try {
-				ban_dao.update(ban);
-				loadData();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			JOptionPane.showMessageDialog(null, "Sửa thành công!!");
-		}
-		if(e.getSource().equals(btnXoa)) {
-			Ban ban = new Ban();
-			ban.setMaBan(tempMaBan);
-			
-			try {
-				ban_dao.delete(ban);
-				loadData();
-				refresh();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			JOptionPane.showMessageDialog(null, "Xóa thành công!!");
-		}
-		if(e.getSource().equals(btntimkiem)) {
-//			String ten = txtTimKiem.getText();
-			loadByName();
-			
-		}
-		if(e.getSource().equals(btnLamMoi)) {
-			try {
-				loadData();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-		refresh();
 		
 	}
 	
-	public void refresh() {
-		txtTenBan.setText("");
-		tempMaBan = null;
-		txtTimKiem.setText("");
-		btnXoa.setEnabled(false);
-		btnSua.setEnabled(false);
-		btnThem.setEnabled(true);
-	}
-	public boolean validTenBan() {
-		if(txtTenBan.getText().trim().equalsIgnoreCase("")) {
-			return false;
-		}else {
-			return true;
-		}
-	}
-	
+
 }
