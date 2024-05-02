@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -15,7 +16,34 @@ import model.HoaDon;
 import model.NhanVien;
 
 public class HoaDon_DAO extends AbstractConnect implements CRUD<HoaDon> {
-
+	
+	public String sinhMaHD() {
+		String ma = "";
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		try {
+			String sql = "select top 1 maHD from hoaDon where maHD like 'HD%' order by maHD desc";
+			Statement statement =con.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		while(rs.next()) {
+			ma = rs.getString("maHD");
+		}			
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if(!ma.equalsIgnoreCase("")) {
+			ma = ma.substring(2);
+			int so = Integer.parseInt(ma) + 1;
+			String numberPart = String.format("%03d",so);
+		}else {
+			ma = "HD001";
+		}
+		
+		return ma;
+		
+	}
+	
 	@Override
 	public ArrayList<HoaDon> getAll() throws SQLException {
 		ArrayList<HoaDon> list = new ArrayList<HoaDon>();

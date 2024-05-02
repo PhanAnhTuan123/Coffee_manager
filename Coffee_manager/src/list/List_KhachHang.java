@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import constraint.CRUD;
+import model.Ban;
 import model.KhachHang;
 
 
@@ -74,6 +75,11 @@ public class List_KhachHang{
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public ArrayList<KhachHang> findByName(String ten) {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 	
 

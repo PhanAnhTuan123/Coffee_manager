@@ -38,5 +38,8 @@ public class List_Ban implements CRUD<Ban>{
 	public void deleteById(int id) throws SQLException {
 		new Ban_DAO().deleteById(id);
 	}
+	public ArrayList<Ban>findByName(String name){
+		return new Ban_DAO().findByName(name);
+	}
 
 }
