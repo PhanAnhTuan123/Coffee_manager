@@ -4,47 +4,46 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
-import list.List_NhanVien;
-import model.NhanVien;
+
+import db.ConnectDB;
+import list.List_HangHoa;
+import model.HangHoa;
 import runapp.Login;
 import testbutton.Buttontest;
-import db.ConnectDB;
 
-public class view_QuanLyNhanVien extends JFrame implements ActionListener{
+public class view_QuanLyHangHoa extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JButton btnThem, btnXoa, btnSua, btnLamMoi, btntimkiem;
 	private JLabel lbltennv;
-	private JRadioButton rdbtnNam, rdbtnNu;
-	private JComboBox<String> cboxChucVu;
 	private JTable table;
 	private DefaultTableModel tableModel;
-	private JTextField txtSDT, txtDiaChi, txtTimKiem, txtHoTen;
+	private JTextField txtTenHH, txtGia, txtTimKiem, txtMaHH;
 	Connection con = null;
 	ResultSet rs = null;
 	PreparedStatement pst = null;
@@ -52,11 +51,12 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 	Color customColor = new Color(255, 255, 255, 0);
 	Color whiteColor = new Color(255, 255, 255, 0);
 	private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh NV
-	private List_NhanVien list_nv = new List_NhanVien();
+	private List_HangHoa list_HangHoa = new List_HangHoa();
 
 	/**
 	 * Launch the application.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 		try {
@@ -67,37 +67,38 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 				}
 			}
 		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyHangHoa.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyHangHoa.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyHangHoa.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyHangHoa.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		}
-		
+
 		try {
 			ConnectDB.getInstance().connect();
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		view_QuanLyNhanVien frame = new view_QuanLyNhanVien();
+		view_QuanLyHangHoa frame = new view_QuanLyHangHoa();
 		frame.setVisible(true);
 	}
 
 	/**
 	 * Create the frame.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
-	public view_QuanLyNhanVien() throws Exception {
+	public view_QuanLyHangHoa() throws Exception {
 		initComponents();
 		setResizable(false);
 		setBackground(Color.WHITE);
-		setTitle("Giao Diện Quản Lý Nhân Viên");
+		setTitle("Giao Diện Quản Lý Hàng Hóa");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		setBounds(100, 100, 1168, 650);
@@ -107,7 +108,7 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		contentPane.setLayout(null);
 
 		lblNvIcon = new JLabel("");
-		lblNvIcon.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/avt.png"))); // Thay đổi đường dẫn
+		lblNvIcon.setIcon(new ImageIcon(view_QuanLyHangHoa.class.getResource("/image/avt.png"))); // Thay đổi đường dẫn
 																									// ảnh của bạn
 		lblNvIcon.setBounds(760, 5, 40, 40); // Điều chỉnh tọa độ và kích thước của ảnh
 		contentPane.add(lblNvIcon);
@@ -192,15 +193,7 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					view_QuanLyHangHoa gdqlhh = new view_QuanLyHangHoa();
-					gdqlhh.setLocationRelativeTo(null);
-					gdqlhh.setVisible(true);
-					dispose();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 		});
 
@@ -265,7 +258,7 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 			}
 		});
 
@@ -321,7 +314,16 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				view_QuanLyNhanVien gdqlnv;
+				try {
+					gdqlnv = new view_QuanLyNhanVien();
+					gdqlnv.setLocationRelativeTo(null);
+					gdqlnv.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 		});
@@ -481,18 +483,18 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		logoutToolBar.add(logoutButton);
 		logoutToolBar.setBackground(customColor);
 		topPanel.add(logoutToolBar);
-		
-		JLabel lblQLKH = new JLabel("Quản Lý Nhân Viên");
-		lblQLKH.setForeground(new Color(255, 255, 255));
-		lblQLKH.setFont(new Font("Open Sans", 1, 16));
-		lblQLKH.setBounds(43, 102, 170, 20);
-		contentPane.add(lblQLKH);
 
-		JLabel lblHoTen = new JLabel("Nhập họ tên:");
-		lblHoTen.setForeground(new Color(255, 255, 255));
-		lblHoTen.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lblHoTen.setBounds(17, 139, 130, 21);
-		contentPane.add(lblHoTen);
+		JLabel lblQLHH = new JLabel("Quản Lý Hàng Hóa\r\n");
+		lblQLHH.setForeground(new Color(255, 255, 255));
+		lblQLHH.setFont(new Font("Open Sans", 1, 16));
+		lblQLHH.setBounds(43, 102, 170, 20);
+		contentPane.add(lblQLHH);
+
+		JLabel lblMaHH = new JLabel("Mã Hàng Hóa:");
+		lblMaHH.setForeground(new Color(255, 255, 255));
+		lblMaHH.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblMaHH.setBounds(17, 139, 130, 21);
+		contentPane.add(lblMaHH);
 
 		JPanel pnlHoTen = new JPanel();
 		pnlHoTen.setBackground(new Color(255, 255, 0));
@@ -500,11 +502,11 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		pnlHoTen.setOpaque(false);
 		contentPane.add(pnlHoTen);
 
-		JLabel lblSDT = new JLabel("Số điện thoại:");
-		lblSDT.setForeground(new Color(255, 255, 255));
-		lblSDT.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lblSDT.setBounds(17, 209, 130, 21);
-		contentPane.add(lblSDT);
+		JLabel lblHangHoa = new JLabel("Tên Hàng Hóa:");
+		lblHangHoa.setForeground(new Color(255, 255, 255));
+		lblHangHoa.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblHangHoa.setBounds(17, 209, 130, 21);
+		contentPane.add(lblHangHoa);
 
 		JPanel pnlSDT = new JPanel();
 		pnlSDT.setOpaque(false);
@@ -512,16 +514,16 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		pnlSDT.setBounds(10, 241, 230, 37);
 		contentPane.add(pnlSDT);
 
-		txtSDT = new JTextField();
-		txtSDT.setFont(new Font("Dialog", Font.PLAIN, 16));
-		txtSDT.setColumns(16);
-		pnlSDT.add(txtSDT);
+		txtTenHH = new JTextField();
+		txtTenHH.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtTenHH.setColumns(16);
+		pnlSDT.add(txtTenHH);
 
-		JLabel lbldiachi = new JLabel("Địa chỉ:");
-		lbldiachi.setForeground(new Color(255, 255, 255));
-		lbldiachi.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lbldiachi.setBounds(17, 289, 130, 21);
-		contentPane.add(lbldiachi);
+		JLabel lblGia = new JLabel("Giá:");
+		lblGia.setForeground(new Color(255, 255, 255));
+		lblGia.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblGia.setBounds(17, 289, 130, 21);
+		contentPane.add(lblGia);
 
 		JPanel pnlDiaChi = new JPanel();
 		pnlDiaChi.setOpaque(false);
@@ -529,33 +531,20 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		pnlDiaChi.setBounds(10, 321, 230, 37);
 		contentPane.add(pnlDiaChi);
 
-		txtDiaChi = new JTextField();
-		txtDiaChi.setFont(new Font("Dialog", Font.PLAIN, 16));
-		txtDiaChi.setColumns(16);
-		pnlDiaChi.add(txtDiaChi);
-
-		rdbtnNam = new JRadioButton("Nam");
-		rdbtnNam.setForeground(new Color(255, 255, 255));
-		rdbtnNam.setFont(new Font("Dialog", Font.PLAIN, 16));
-		rdbtnNam.setBounds(16, 390, 103, 21);
-		contentPane.add(rdbtnNam);
-
-		rdbtnNu = new JRadioButton("Nữ");
-		rdbtnNu.setForeground(new Color(255, 255, 255));
-		rdbtnNu.setFont(new Font("Dialog", Font.PLAIN, 16));
-		rdbtnNu.setBounds(140, 390, 103, 21);
-		contentPane.add(rdbtnNu);
+		txtGia = new JTextField();
+		txtGia.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtGia.setColumns(16);
+		pnlDiaChi.add(txtGia);
 
 		// Thêm chúng vào ButtonGroup
 		ButtonGroup buttonGroup = new ButtonGroup();
-		buttonGroup.add(rdbtnNam);
-		buttonGroup.add(rdbtnNu);
 
 		// Add JTextField below JCheckBox
-		txtHoTen = new JTextField();
-		txtHoTen.setFont(new Font("Open Sans", 0, 16));
-		txtHoTen.setColumns(16); // You can adjust the column count based on your requirement
-		pnlHoTen.add(txtHoTen);
+		txtMaHH = new JTextField();
+		txtMaHH.setEnabled(false);
+		txtMaHH.setFont(new Font("Open Sans", 0, 16));
+		txtMaHH.setColumns(16); // You can adjust the column count based on your requirement
+		pnlHoTen.add(txtMaHH);
 
 		txtTimKiem = new JTextField();
 		txtTimKiem.setFont(new Font("Dialog", Font.PLAIN, 16));
@@ -563,20 +552,8 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		txtTimKiem.setBounds(871, 99, 214, 30);
 		contentPane.add(txtTimKiem);
 
-		JLabel lblChucVu = new JLabel("Chức vụ:");
-		lblChucVu.setForeground(new Color(255, 255, 255));
-		lblChucVu.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lblChucVu.setBounds(17, 440, 70, 21);
-		contentPane.add(lblChucVu);
-
-		cboxChucVu = new JComboBox<String>();
-		cboxChucVu.setBounds(113, 442, 100, 22);
-		cboxChucVu.addItem("Nhân Viên");
-		cboxChucVu.addItem("Quản Lý");
-		contentPane.add(cboxChucVu);
-
 		btntimkiem = new JButton("");
-		btntimkiem.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/search.png")));
+		btntimkiem.setIcon(new ImageIcon(view_QuanLyHangHoa.class.getResource("/image/search.png")));
 		btntimkiem.setBounds(1090, 99, 40, 30);
 		contentPane.add(btntimkiem);
 
@@ -598,33 +575,25 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		contentPane.add(btnLamMoi);
 
 		// Khởi tạo DefaultTableModel với các cột
-		String[] columnNames = { "Mã NV", "Tên NV","Địa Chỉ", "SĐT","Chức Vụ","Giới tính"}; // Thay đổi tên cột tùy ý
+		String[] columnNames = { "Mã Hàng Hóa", "Tên Hàng Hóa", "Giá" }; // Thay đổi tên cột tùy ý
 		tableModel = new DefaultTableModel(columnNames, 0);
 
 		// Khởi tạo JTable với DefaultTableModel
 		table = new JTable(tableModel);
-		table.getColumnModel().getColumn(4).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
-		
+		table.getColumnModel().getColumn(2).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
+
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int r = table.getSelectedRow();
-				txtHoTen.setText(tableModel.getValueAt(r,1).toString());
-				txtSDT.setText(tableModel.getValueAt(r,3).toString());
-				txtDiaChi.setText(tableModel.getValueAt(r,2).toString());
-				if(tableModel.getValueAt(r,5).toString().equals("Nam")) {
-					rdbtnNam.setSelected(true);
-				}else {
-					rdbtnNu.setSelected(true);
-				}
-				if(tableModel.getValueAt(r,4).toString().equals("Nhân Viên")) {
-					cboxChucVu.setSelectedIndex(0);
-				}else {
-					cboxChucVu.setSelectedIndex(1);
-				}
+				txtMaHH.setText(tableModel.getValueAt(r, 0).toString());
+				txtTenHH.setText(tableModel.getValueAt(r, 1).toString());
+				txtGia.setText(tableModel.getValueAt(r, 2).toString());
+				btnSua.setEnabled(true);
+				btnXoa.setEnabled(true);
 			}
 		});
-		
+
 		// theo ý muốn
 
 		// Tạo JScrollPane để thêm bảng vào để có thể cuộn
@@ -634,39 +603,29 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		// Thêm bảng và JScrollPane vào contentPane
 		contentPane.add(scrollPane);
 
-
-
 		// add su kien
 		btnThem.addActionListener(this);
 		btnXoa.addActionListener(this);
 		btnSua.addActionListener(this);
 		btnLamMoi.addActionListener(this);
 		btntimkiem.addActionListener(this);
-		
 
 		JLabel background = new JLabel("");
 		background.setHorizontalAlignment(SwingConstants.CENTER);
-		background.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/bgCF.jpg")));
+		background.setIcon(new ImageIcon(view_QuanLyHangHoa.class.getResource("/image/bgCF.jpg")));
 		background.setBounds(0, 0, 1162, 613);
 		contentPane.add(background);
-		
-		
+		refresh();
 		loadData();
 	}
-	
+
 	private void loadData() throws SQLException {
-		
-		for(NhanVien nv : list_nv.getAll()) {
-			String gioiTinh = "";
-			if(nv.getGioiTinh() == true) {
-				gioiTinh = "Nam"; 
-			}else {
-				gioiTinh = "Nữ";
-			}
-			tableModel.addRow(new Object[] {nv.getMaNV(),nv.getTenNV(),nv.getDiaChi(),nv.getSdt(),nv.getChucVu(),gioiTinh});
+		tableModel.setRowCount(0);
+		for (HangHoa hh : list_HangHoa.getAll()) {
+			tableModel.addRow(new Object[] { hh.getMaHH(), hh.getTenHH(), hh.getGia() });
 		}
 	}
-	
+
 	private void initComponents() {
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		addWindowListener(new java.awt.event.WindowAdapter() {
@@ -684,15 +643,92 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 		pack();
 	}
+
 	private void formWindowClosing(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_formWindowClosing
 		Main_form_manager gdql = new Main_form_manager();
 		gdql.setLocationRelativeTo(null);
 		gdql.setVisible(true);
 	}
 
+	public void loadByName() {
+		String ten = txtTimKiem.getText();
+		ArrayList<HangHoa> tempList = new ArrayList<HangHoa>();
+		tempList = list_HangHoa.findByName(ten);
+		tableModel.setRowCount(0);
+		for (HangHoa item : tempList) {
+			tableModel.addRow(new Object[] { item.getMaHH(), item.getTenHH(), item.getGia() });
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (e.getSource().equals(btnThem)) {
+			if (txtTenHH.getText().isEmpty() || txtGia.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(this, "Vui lòng nhập thông tin đầy đủ");
+			} else {
+				HangHoa hangHoa = new HangHoa();
+				hangHoa.setMaHH(list_HangHoa.sinhMaHH());
+				hangHoa.setTenHH(txtTenHH.getText());
+				hangHoa.setGia(Double.parseDouble(txtGia.getText()));
+				try {
+					list_HangHoa.save(hangHoa);
+					loadData();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		if (e.getSource().equals(btnSua)) {
+			HangHoa hangHoa = new HangHoa();
+			hangHoa.setMaHH(txtMaHH.getText());
+			hangHoa.setTenHH(txtTenHH.getText());
+			hangHoa.setGia(Double.parseDouble(txtGia.getText()));
+			try {
+				list_HangHoa.update(hangHoa);
+				loadData();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Sửa thành công!!");
+		}
+		if (e.getSource().equals(btnXoa)) {
+			int r = table.getSelectedRow();
+			HangHoa hangHoa = new HangHoa();
+			hangHoa.setMaHH(tableModel.getValueAt(r, 0).toString());
+			try {
+				list_HangHoa.delete(hangHoa);
+				loadData();
+				refresh();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Xóa thành công!!");
+		}
+		if (e.getSource().equals(btntimkiem)) {
+//			String ten = txtTimKiem.getText();
+			loadByName();
+
+		}
+		if (e.getSource().equals(btnLamMoi)) {
+			try {
+				loadData();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		refresh();
+	}
+
+	public void refresh() {
+		txtMaHH.setText("");
+		txtTenHH.setText("");
+		txtGia.setText("");
+		txtTimKiem.setText("");
+		btnXoa.setEnabled(false);
+		btnSua.setEnabled(false);
+		btnThem.setEnabled(true);
+
 	}
 }

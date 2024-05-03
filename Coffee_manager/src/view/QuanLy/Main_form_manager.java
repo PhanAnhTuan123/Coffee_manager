@@ -170,6 +170,15 @@ public class Main_form_manager extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				try {
+					view_QuanLyHangHoa gdqlhh = new view_QuanLyHangHoa();
+					gdqlhh.setLocationRelativeTo(null);
+					gdqlhh.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 				
 			}
@@ -358,7 +367,15 @@ public class Main_form_manager extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				try {
+					view_QuanLyTaiKhoan gdqltk = new view_QuanLyTaiKhoan();
+					gdqltk.setLocationRelativeTo(null);
+					gdqltk.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 		});

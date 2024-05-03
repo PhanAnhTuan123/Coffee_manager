@@ -73,7 +73,7 @@ public class Main_form_employee extends JFrame implements ActionListener {
 	public Main_form_employee() {
 		setResizable(false);
 		setBackground(Color.WHITE);
-		setTitle("Giao Diện Quản Lý");
+		setTitle("Giao Diện Nhân Viên");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		setBounds(100, 100, 1168, 650);

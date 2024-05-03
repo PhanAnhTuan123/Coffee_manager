@@ -55,7 +55,7 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 	private JLabel lbltennv;
 	private JTable table;
 	private DefaultTableModel tableModel;
-	private JTextField txtSDT, txtDiaChi, txtTimKiem, txtTenBan;
+	private JTextField txtTimKiem, txtTenBan;
 	Connection con = null;
 	ResultSet rs = null;
 	PreparedStatement pst = null;
@@ -63,7 +63,6 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 	Color customColor = new Color(255, 255, 255, 0);
 	Color whiteColor = new Color(255, 255, 255, 0);
 	private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh NV
-	private List_NhanVien list_nv = new List_NhanVien();
 	/**
 	 * Launch the application.
 	 */
@@ -660,7 +659,7 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 
 
 		if(e.getSource().equals(btnThem)) {
-//			System.out.println("Them!!");
+		if(validTenBan()) {
 			Ban ban = new Ban();
 			ban.setMaBan(ban_dao.sinhMaBan());
 			ban.setTenBan(txtTenBan.getText());
@@ -671,6 +670,11 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		}else {
+			JOptionPane.showMessageDialog(null, "Vui lòng điền thông tin!!");
+		}
+//			System.out.println("Them!!");
+			
 		}
 		if(e.getSource().equals(btnSua)) {
 			System.out.println("Sua");
@@ -724,6 +728,13 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 		btnXoa.setEnabled(false);
 		btnSua.setEnabled(false);
 		btnThem.setEnabled(true);
-		
 	}
+	public boolean validTenBan() {
+		if(txtTenBan.getText().trim().equalsIgnoreCase("")) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+	
 }

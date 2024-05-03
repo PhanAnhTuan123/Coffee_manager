@@ -86,4 +86,18 @@ public class KhachHang {
 		return null;
 	}
 
+
+
+	public boolean getGioiTinh() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	public void setGioiTinh(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

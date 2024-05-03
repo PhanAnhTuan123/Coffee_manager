@@ -40,7 +40,7 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 	private JPanel contentPane;
 	private JButton btnThem, btnXoa, btnSua, btnLamMoi, btntimkiem;
 	private JLabel lbltenkh;
-	private JRadioButton rdbtnNam, rdbtnNu;
+//	private JRadioButton rdbtnNam, rdbtnNu;
 //	private JComboBox<String> cboxChucVu;
 	private JTable table;
 	private DefaultTableModel tableModel;
@@ -518,22 +518,22 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 		txtDiaChi.setColumns(16);
 		pnlDiaChi.add(txtDiaChi);
 
-		rdbtnNam = new JRadioButton("Nam");
-		rdbtnNam.setForeground(new Color(255, 255, 255));
-		rdbtnNam.setFont(new Font("Dialog", Font.PLAIN, 16));
-		rdbtnNam.setBounds(16, 390, 103, 21);
-		contentPane.add(rdbtnNam);
-
-		rdbtnNu = new JRadioButton("Nữ");
-		rdbtnNu.setForeground(new Color(255, 255, 255));
-		rdbtnNu.setFont(new Font("Dialog", Font.PLAIN, 16));
-		rdbtnNu.setBounds(140, 390, 103, 21);
-		contentPane.add(rdbtnNu);
+//		rdbtnNam = new JRadioButton("Nam");
+//		rdbtnNam.setForeground(new Color(255, 255, 255));
+//		rdbtnNam.setFont(new Font("Dialog", Font.PLAIN, 16));
+//		rdbtnNam.setBounds(16, 390, 103, 21);
+//		contentPane.add(rdbtnNam);
+//
+//		rdbtnNu = new JRadioButton("Nữ");
+//		rdbtnNu.setForeground(new Color(255, 255, 255));
+//		rdbtnNu.setFont(new Font("Dialog", Font.PLAIN, 16));
+//		rdbtnNu.setBounds(140, 390, 103, 21);
+//		contentPane.add(rdbtnNu);
 
 		// Thêm chúng vào ButtonGroup
 		ButtonGroup buttonGroup = new ButtonGroup();
-		buttonGroup.add(rdbtnNam);
-		buttonGroup.add(rdbtnNu);
+//		buttonGroup.add(rdbtnNam);
+//		buttonGroup.add(rdbtnNu);
 
 		// Add JTextField below JCheckBox
 		txtHoTen = new JTextField();
@@ -547,11 +547,11 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 		txtTimKiem.setBounds(871, 99, 214, 30);
 		contentPane.add(txtTimKiem);
 
-		JLabel lblChucVu = new JLabel("Chức vụ:");
-		lblChucVu.setForeground(new Color(255, 255, 255));
-		lblChucVu.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lblChucVu.setBounds(17, 440, 70, 21);
-		contentPane.add(lblChucVu);
+//		JLabel lblChucVu = new JLabel("Chức vụ:");
+//		lblChucVu.setForeground(new Color(255, 255, 255));
+//		lblChucVu.setFont(new Font("Dialog", Font.PLAIN, 16));
+//		lblChucVu.setBounds(17, 440, 70, 21);
+//		contentPane.add(lblChucVu);
 
 //		cboxChucVu = new JComboBox<String>();
 //		cboxChucVu.setBounds(113, 442, 100, 22);
@@ -596,12 +596,12 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 				txtHoTen.setText(tableModel.getValueAt(r,1).toString());
 				txtSDT.setText(tableModel.getValueAt(r,3).toString());
 				txtDiaChi.setText(tableModel.getValueAt(r,2).toString());
-				if(tableModel.getValueAt(r,5).toString().equals("Nam")) {
-					rdbtnNam.setSelected(true);
-				}else {
-					rdbtnNu.setSelected(true);
-				}
-//				if(tableModel.getValueAt(r,4).toString().equals("Nhân Viên")) {
+//				if(tableModel.getValueAt(r,5).toString().equals("Nam")) {
+//					rdbtnNam.setSelected(true);
+//				}else {
+//					rdbtnNu.setSelected(true);
+//				}
+////				if(tableModel.getValueAt(r,4).toString().equals("Nhân Viên")) {
 //					cboxChucVu.setSelectedIndex(0);
 //				}else {
 //					cboxChucVu.setSelectedIndex(1);
@@ -640,15 +640,15 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 	
 	private void loadData() throws SQLException {
 		
-		for(NhanVien nv : list_nv.getAll()) {
-			String gioiTinh = "";
-			if(nv.getGioiTinh() == true) {
-				gioiTinh = "Nam"; 
-			}else {
-				gioiTinh = "Nữ";
-			}
-			tableModel.addRow(new Object[] {nv.getMaNV(),nv.getTenNV(),nv.getDiaChi(),nv.getSdt(),nv.getChucVu(),gioiTinh});
-		}
+//		for(NhanVien nv : list_nv.getAll()) {
+//			String gioiTinh = "";
+//			if(nv.getGioiTinh() == true) {
+//				gioiTinh = "Nam"; 
+//			}else {
+//				gioiTinh = "Nữ";
+//			}
+//			tableModel.addRow(new Object[] {nv.getMaNV(),nv.getTenNV(),nv.getDiaChi(),nv.getSdt(),nv.getChucVu(),gioiTinh});
+//		}
 	}
 	
 	private void initComponents() {

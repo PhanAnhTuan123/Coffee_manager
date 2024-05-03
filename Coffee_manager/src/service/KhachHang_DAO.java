@@ -15,180 +15,116 @@ import model.KhachHang;
 //import model.NhanVien;
 
 public class KhachHang_DAO extends AbstractConnect  implements CRUD<KhachHang> {
-
 	@Override
 	public ArrayList<KhachHang> getAll() throws SQLException {
-		ArrayList<KhachHang>list = new ArrayList<KhachHang>();
-		Connection con = ConnectDB.getConnection();
-		try {
-			String sql = "select * from KhachHang ";
-			Statement statement = con.createStatement();
-			ResultSet rs = statement.executeQuery(sql);
-			while(rs.next()) {
-				list.add(new KhachHang(
-							rs.getString("maKH"),
-							rs.getString("tenKH"),
-							rs.getString("DiaChi"),
-							rs.getString("SDT")
-						));
-			}
-
-		} catch (Exception e) {
-			
-		}
-		
-		
-		return list;
+		ArrayList<KhachHang> employees = new ArrayList<>();
+        Statement statement = conn.createStatement();
+        String query = "SELECT * FROM KhachHang;";
+        ResultSet rs = statement.executeQuery(query);
+        while (rs.next()) {
+        	KhachHang employee = KhachHang.getFromResultSet(rs);
+            employees.add(employee);
+        }
+        return employees;
 	}
 
-	public String sinhMaKhachHang() {
-		String ma = "";
-		ConnectDB.getInstance();
-		Connection con = ConnectDB.getConnection();
-		try {
-			String sql = "select top 1 maKhachHang from KhachHang where maKhachHang like 'BN%' order by maKhachHang desc";
-			Statement statement =con.createStatement();
-			ResultSet rs = statement.executeQuery(sql);
-//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		while(rs.next()) {
-			ma = rs.getString("maKhachHang");
-		}			
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		if(!ma.equalsIgnoreCase("")) {
-			ma = ma.substring(2);
-			int so = Integer.parseInt(ma) + 1;
-//			System.out.println(so);
-			String numberPart = String.format("%03d",so);
-			ma = "BN"+ numberPart;
-		}else {
-			ma = "BN001";
-		}
-		System.out.println(ma);
-		return ma;
-	}
-	public ArrayList<KhachHang> findByName(String tenKH) {
-		ArrayList<KhachHang>list = new ArrayList<KhachHang>();
-		ConnectDB.getInstance();
-		Connection con = ConnectDB.getConnection();
-		
-		try {
-			String sql = "select * from Ban where tenBan like '%"+tenKH+"%' ";
-			Statement statement =con.createStatement();
-			ResultSet rs = statement.executeQuery(sql);
-//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		while(rs.next()) {
-			list.add(new KhachHang(
-					rs.getString("maKH"),
-					rs.getString("tenKH"),
-					rs.getString("DiaChi"),
-					rs.getString("SDT")
-					));
-		}			
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-	
 	@Override
 	public KhachHang get(int id) throws SQLException {
-		KhachHang KhachHang  = new KhachHang();
-		ConnectDB.getInstance();
-		Connection con = ConnectDB.getConnection();
-		try {
-			
-		} catch (Exception e) {
-			String sql = "select * from Ban where maKhachHang = ?";
-			Statement statement = con.createStatement();
-			ResultSet rs = statement.executeQuery(sql);
-			while(rs.next()) {
-				KhachHang = new KhachHang(
-						rs.getString("maKH"),
-						rs.getString("tenKH"),
-						rs.getString("DiaChi"),
-						rs.getString("SDT")
-						);
-			}
-			
-		}
-		return KhachHang;
+		Statement statement = conn.createStatement();
+        String query = "SELECT * FROM KhachHang WHERE maKH = " + id;
+        ResultSet rs = statement.executeQuery(query);
+        if (rs.next()) {
+        	KhachHang employee = KhachHang.getFromResultSet(rs);
+            return employee;
+        }
+        return null;
 	}
 
 	@Override
 	public void save(KhachHang t) throws SQLException {
-		
-		ConnectDB.getInstance();
-		Connection con = ConnectDB.getConnection();
-		PreparedStatement stm = null;
-		String sql = "insert into KhachHang(maKH,tenKH) values (?,?)";
-		
-		try {
-			stm = con.prepareStatement(sql);
-			stm.setString(1,t.getMaKH());
-			stm.setString(2, t.getTenKH());
-			stm.setString(3, t.getDiaChi());
-			stm.setString(4, t.getSdt());
-		
-			stm.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			close(stm);
-		}
-		
-		
+		if (t == null) {
+            throw new SQLException("Khách Hàng rỗng");
+        }
+        String query = "INSERT INTO KhachHang(maKH,TenKH,DiaChi,SDT)"
+        		+ " VALUES (?,?,?,?)";
+
+        PreparedStatement stmt = conn.prepareStatement(query);
+        stmt.setNString(1, t.getMaKH());
+        stmt.setNString(2, t.getTenKH());
+        stmt.setNString(3, t.getDiaChi());
+        stmt.setNString(4, t.getSdt());
+        
+        int row = stmt.executeUpdate();
 	}
 
 	@Override
 	public void update(KhachHang t) throws SQLException {
-		ConnectDB.getInstance();
-		Connection con = ConnectDB.getConnection();
-		PreparedStatement stm = null;
-		String sql = "Update Ban set tenKhachHang = ? where maKhachHang = ?";
-		try {
-			stm = con.prepareStatement(sql);
-			stm.setString(1,t.getMaKH());
-			stm.setString(2, t.getTenKH());
-			stm.setString(3, t.getDiaChi());
-			stm.setString(4, t.getSdt());
-		
-			stm.executeUpdate();
-		} catch (Exception e) {
-		
-			e.printStackTrace();
-			
-		}finally {
-			close(stm);
-		}
-		
+		if (t == null) {
+            throw new SQLException("Khách Hàng rỗng");
+        }
+        String query = "UPDATE KhachHang SET TenKH = ?,DiaChi = ?,SDT = ?";
+        PreparedStatement stmt = conn.prepareStatement(query);
+        stmt.setNString(1, t.getMaKH());
+        stmt.setNString(2, t.getTenKH());
+        stmt.setNString(3, t.getDiaChi());
+        stmt.setNString(4, t.getSdt());
+        stmt.executeUpdate();
 	}
 
 	@Override
 	public void delete(KhachHang t) throws SQLException {
-		ConnectDB.getInstance();
-		Connection con = ConnectDB.getConnection();
-		PreparedStatement stm = null;
-		String sql = "DELETE Ban where maKhachHang = ?";
+		PreparedStatement stmt = conn.prepareStatement("DELETE FROM KhachHang WHERE maKH = ?");
+        stmt.setNString(1, t.getMaKH());
+        stmt.executeUpdate();
+	}
+	
+	public String sinhMaKH() {
+		String ma = "";
 		try {
-			stm = con.prepareStatement(sql);
-			stm.setString(1, t.getMaKH());
-			stm.executeUpdate();
-		} catch (Exception e) {
+			String sql = "select top 1 maKH from KhachHang where maNV like 'NV%' order by maKH desc";
+			Statement statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			while (rs.next()) {
+				ma = rs.getString("maKH");
+			}
+		} catch (SQLException e) {
 			e.printStackTrace();
-			
-		}finally {
-			close(stm);
 		}
+
+		if (!ma.equalsIgnoreCase("")) {
+			ma = ma.substring(2);
+			int so = Integer.parseInt(ma) + 1;
+//			System.out.println(so);
+			String numberPart = String.format("%03d", so);
+			ma = "KH" + numberPart;
+		} else {
+			ma = "KH001";
+		}
+		System.out.println(ma);
+		return ma;
+	}
+	
+	public ArrayList<KhachHang> findByName(String ten) {
+		ArrayList<KhachHang> list = new ArrayList<KhachHang>();
+		try {
+			String sql = "select * from KhachHang where TenKH like '%" + ten + "%' ";
+			Statement statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			while (rs.next()) {
+				list.add(new KhachHang(rs.getString("maKH"),rs.getString("TenKH"),rs.getString("DiaChi"),rs.getString("SDT")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 
-	
-	
 	@Override
 	public void deleteById(int id) throws SQLException {
-			
+		PreparedStatement stmt = conn.prepareStatement("DELETE FROM KhachHang WHERE maKH = ?");
+        stmt.setInt(1, id);
+        stmt.executeUpdate();
 	}
+
 
 }

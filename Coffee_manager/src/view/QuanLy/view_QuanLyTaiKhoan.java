@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,37 +13,37 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
-import list.List_NhanVien;
-import model.NhanVien;
+
+import db.ConnectDB;
+import list.List_HangHoa;
+import list.List_TaiKhoan;
+import model.HangHoa;
+import model.TaiKhoan;
 import runapp.Login;
 import testbutton.Buttontest;
-import db.ConnectDB;
 
-public class view_QuanLyNhanVien extends JFrame implements ActionListener{
+public class view_QuanLyTaiKhoan extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JButton btnThem, btnXoa, btnSua, btnLamMoi, btntimkiem;
 	private JLabel lbltennv;
-	private JRadioButton rdbtnNam, rdbtnNu;
-	private JComboBox<String> cboxChucVu;
 	private JTable table;
 	private DefaultTableModel tableModel;
-	private JTextField txtSDT, txtDiaChi, txtTimKiem, txtHoTen;
+	private JTextField txtMK, txtTimKiem, txtTenDN;
 	Connection con = null;
 	ResultSet rs = null;
 	PreparedStatement pst = null;
@@ -52,7 +51,7 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 	Color customColor = new Color(255, 255, 255, 0);
 	Color whiteColor = new Color(255, 255, 255, 0);
 	private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh NV
-	private List_NhanVien list_nv = new List_NhanVien();
+	private List_TaiKhoan list_TaiKhoan = new List_TaiKhoan();
 
 	/**
 	 * Launch the application.
@@ -67,16 +66,16 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 				}
 			}
 		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyTaiKhoan.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyTaiKhoan.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyTaiKhoan.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyTaiKhoan.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		}
 		
@@ -85,7 +84,7 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		view_QuanLyNhanVien frame = new view_QuanLyNhanVien();
+		view_QuanLyTaiKhoan frame = new view_QuanLyTaiKhoan();
 		frame.setVisible(true);
 	}
 
@@ -93,11 +92,11 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 	 * Create the frame.
 	 * @throws Exception 
 	 */
-	public view_QuanLyNhanVien() throws Exception {
+	public view_QuanLyTaiKhoan() throws Exception {
 		initComponents();
 		setResizable(false);
 		setBackground(Color.WHITE);
-		setTitle("Giao Diện Quản Lý Nhân Viên");
+		setTitle("Giao Diện Quản Lý Hàng Hóa");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		setBounds(100, 100, 1168, 650);
@@ -107,7 +106,7 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		contentPane.setLayout(null);
 
 		lblNvIcon = new JLabel("");
-		lblNvIcon.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/avt.png"))); // Thay đổi đường dẫn
+		lblNvIcon.setIcon(new ImageIcon(view_QuanLyTaiKhoan.class.getResource("/image/avt.png"))); // Thay đổi đường dẫn
 																									// ảnh của bạn
 		lblNvIcon.setBounds(760, 5, 40, 40); // Điều chỉnh tọa độ và kích thước của ảnh
 		contentPane.add(lblNvIcon);
@@ -192,15 +191,7 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					view_QuanLyHangHoa gdqlhh = new view_QuanLyHangHoa();
-					gdqlhh.setLocationRelativeTo(null);
-					gdqlhh.setVisible(true);
-					dispose();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 		});
 
@@ -265,7 +256,7 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 			}
 		});
 
@@ -321,7 +312,16 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				view_QuanLyNhanVien gdqlnv;
+				try {
+					gdqlnv = new view_QuanLyNhanVien();
+					gdqlnv.setLocationRelativeTo(null);
+					gdqlnv.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 		});
@@ -376,15 +376,7 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					view_QuanLyTaiKhoan gdqltk = new view_QuanLyTaiKhoan();
-					gdqltk.setLocationRelativeTo(null);
-					gdqltk.setVisible(true);
-					dispose();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 
 		});
@@ -482,17 +474,17 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		logoutToolBar.setBackground(customColor);
 		topPanel.add(logoutToolBar);
 		
-		JLabel lblQLKH = new JLabel("Quản Lý Nhân Viên");
-		lblQLKH.setForeground(new Color(255, 255, 255));
-		lblQLKH.setFont(new Font("Open Sans", 1, 16));
-		lblQLKH.setBounds(43, 102, 170, 20);
-		contentPane.add(lblQLKH);
+		JLabel lblQLTK = new JLabel("Quản Lý Tài Khoản");
+		lblQLTK.setForeground(new Color(255, 255, 255));
+		lblQLTK.setFont(new Font("Open Sans", 1, 16));
+		lblQLTK.setBounds(43, 102, 170, 20);
+		contentPane.add(lblQLTK);
 
-		JLabel lblHoTen = new JLabel("Nhập họ tên:");
-		lblHoTen.setForeground(new Color(255, 255, 255));
-		lblHoTen.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lblHoTen.setBounds(17, 139, 130, 21);
-		contentPane.add(lblHoTen);
+		JLabel lblTenDangNhap = new JLabel("Tên Đăng Nhập:");
+		lblTenDangNhap.setForeground(new Color(255, 255, 255));
+		lblTenDangNhap.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblTenDangNhap.setBounds(17, 139, 130, 21);
+		contentPane.add(lblTenDangNhap);
 
 		JPanel pnlHoTen = new JPanel();
 		pnlHoTen.setBackground(new Color(255, 255, 0));
@@ -500,11 +492,11 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		pnlHoTen.setOpaque(false);
 		contentPane.add(pnlHoTen);
 
-		JLabel lblSDT = new JLabel("Số điện thoại:");
-		lblSDT.setForeground(new Color(255, 255, 255));
-		lblSDT.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lblSDT.setBounds(17, 209, 130, 21);
-		contentPane.add(lblSDT);
+		JLabel lblMatKhau = new JLabel("Mật Khẩu:");
+		lblMatKhau.setForeground(new Color(255, 255, 255));
+		lblMatKhau.setFont(new Font("Dialog", Font.PLAIN, 16));
+		lblMatKhau.setBounds(17, 209, 130, 21);
+		contentPane.add(lblMatKhau);
 
 		JPanel pnlSDT = new JPanel();
 		pnlSDT.setOpaque(false);
@@ -512,50 +504,19 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		pnlSDT.setBounds(10, 241, 230, 37);
 		contentPane.add(pnlSDT);
 
-		txtSDT = new JTextField();
-		txtSDT.setFont(new Font("Dialog", Font.PLAIN, 16));
-		txtSDT.setColumns(16);
-		pnlSDT.add(txtSDT);
-
-		JLabel lbldiachi = new JLabel("Địa chỉ:");
-		lbldiachi.setForeground(new Color(255, 255, 255));
-		lbldiachi.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lbldiachi.setBounds(17, 289, 130, 21);
-		contentPane.add(lbldiachi);
-
-		JPanel pnlDiaChi = new JPanel();
-		pnlDiaChi.setOpaque(false);
-		pnlDiaChi.setBackground(Color.YELLOW);
-		pnlDiaChi.setBounds(10, 321, 230, 37);
-		contentPane.add(pnlDiaChi);
-
-		txtDiaChi = new JTextField();
-		txtDiaChi.setFont(new Font("Dialog", Font.PLAIN, 16));
-		txtDiaChi.setColumns(16);
-		pnlDiaChi.add(txtDiaChi);
-
-		rdbtnNam = new JRadioButton("Nam");
-		rdbtnNam.setForeground(new Color(255, 255, 255));
-		rdbtnNam.setFont(new Font("Dialog", Font.PLAIN, 16));
-		rdbtnNam.setBounds(16, 390, 103, 21);
-		contentPane.add(rdbtnNam);
-
-		rdbtnNu = new JRadioButton("Nữ");
-		rdbtnNu.setForeground(new Color(255, 255, 255));
-		rdbtnNu.setFont(new Font("Dialog", Font.PLAIN, 16));
-		rdbtnNu.setBounds(140, 390, 103, 21);
-		contentPane.add(rdbtnNu);
+		txtMK = new JTextField();
+		txtMK.setFont(new Font("Dialog", Font.PLAIN, 16));
+		txtMK.setColumns(16);
+		pnlSDT.add(txtMK);
 
 		// Thêm chúng vào ButtonGroup
 		ButtonGroup buttonGroup = new ButtonGroup();
-		buttonGroup.add(rdbtnNam);
-		buttonGroup.add(rdbtnNu);
 
 		// Add JTextField below JCheckBox
-		txtHoTen = new JTextField();
-		txtHoTen.setFont(new Font("Open Sans", 0, 16));
-		txtHoTen.setColumns(16); // You can adjust the column count based on your requirement
-		pnlHoTen.add(txtHoTen);
+		txtTenDN = new JTextField();
+		txtTenDN.setFont(new Font("Open Sans", 0, 16));
+		txtTenDN.setColumns(16); // You can adjust the column count based on your requirement
+		pnlHoTen.add(txtTenDN);
 
 		txtTimKiem = new JTextField();
 		txtTimKiem.setFont(new Font("Dialog", Font.PLAIN, 16));
@@ -563,20 +524,8 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		txtTimKiem.setBounds(871, 99, 214, 30);
 		contentPane.add(txtTimKiem);
 
-		JLabel lblChucVu = new JLabel("Chức vụ:");
-		lblChucVu.setForeground(new Color(255, 255, 255));
-		lblChucVu.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lblChucVu.setBounds(17, 440, 70, 21);
-		contentPane.add(lblChucVu);
-
-		cboxChucVu = new JComboBox<String>();
-		cboxChucVu.setBounds(113, 442, 100, 22);
-		cboxChucVu.addItem("Nhân Viên");
-		cboxChucVu.addItem("Quản Lý");
-		contentPane.add(cboxChucVu);
-
 		btntimkiem = new JButton("");
-		btntimkiem.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/search.png")));
+		btntimkiem.setIcon(new ImageIcon(view_QuanLyTaiKhoan.class.getResource("/image/search.png")));
 		btntimkiem.setBounds(1090, 99, 40, 30);
 		contentPane.add(btntimkiem);
 
@@ -598,30 +547,19 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		contentPane.add(btnLamMoi);
 
 		// Khởi tạo DefaultTableModel với các cột
-		String[] columnNames = { "Mã NV", "Tên NV","Địa Chỉ", "SĐT","Chức Vụ","Giới tính"}; // Thay đổi tên cột tùy ý
+		String[] columnNames = { "Tên Đăng Nhập", "Mật Khẩu"}; // Thay đổi tên cột tùy ý
 		tableModel = new DefaultTableModel(columnNames, 0);
 
 		// Khởi tạo JTable với DefaultTableModel
 		table = new JTable(tableModel);
-		table.getColumnModel().getColumn(4).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
+		table.getColumnModel().getColumn(1).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
 		
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int r = table.getSelectedRow();
-				txtHoTen.setText(tableModel.getValueAt(r,1).toString());
-				txtSDT.setText(tableModel.getValueAt(r,3).toString());
-				txtDiaChi.setText(tableModel.getValueAt(r,2).toString());
-				if(tableModel.getValueAt(r,5).toString().equals("Nam")) {
-					rdbtnNam.setSelected(true);
-				}else {
-					rdbtnNu.setSelected(true);
-				}
-				if(tableModel.getValueAt(r,4).toString().equals("Nhân Viên")) {
-					cboxChucVu.setSelectedIndex(0);
-				}else {
-					cboxChucVu.setSelectedIndex(1);
-				}
+				txtTenDN.setText(tableModel.getValueAt(r,0).toString());
+				txtMK.setText(tableModel.getValueAt(r,1).toString());
 			}
 		});
 		
@@ -646,7 +584,7 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 		JLabel background = new JLabel("");
 		background.setHorizontalAlignment(SwingConstants.CENTER);
-		background.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/bgCF.jpg")));
+		background.setIcon(new ImageIcon(view_QuanLyTaiKhoan.class.getResource("/image/bgCF.jpg")));
 		background.setBounds(0, 0, 1162, 613);
 		contentPane.add(background);
 		
@@ -655,15 +593,8 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 	}
 	
 	private void loadData() throws SQLException {
-		
-		for(NhanVien nv : list_nv.getAll()) {
-			String gioiTinh = "";
-			if(nv.getGioiTinh() == true) {
-				gioiTinh = "Nam"; 
-			}else {
-				gioiTinh = "Nữ";
-			}
-			tableModel.addRow(new Object[] {nv.getMaNV(),nv.getTenNV(),nv.getDiaChi(),nv.getSdt(),nv.getChucVu(),gioiTinh});
+		for(TaiKhoan tk : list_TaiKhoan.getAll()) {
+			tableModel.addRow(new Object[] {tk.getUserName().getMaNV(),tk.getPassWord()});
 		}
 	}
 	
