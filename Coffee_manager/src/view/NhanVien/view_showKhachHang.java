@@ -26,7 +26,6 @@ public class view_showKhachHang extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 	private JTextField txtMaKH;
-	public view_taoHoaDon view;
 	private DefaultTableModel model;
 	private List_KhachHang list_kh;
 	private KhachHang_DAO kh_dao;
@@ -132,13 +131,6 @@ public class view_showKhachHang extends JDialog {
 //		}
 	}
 
-	public view_taoHoaDon getView() {
-		return view;
-	}
-
-	public void setView(view_taoHoaDon view) {
-		this.view = view;
-	}
 	
 
 }

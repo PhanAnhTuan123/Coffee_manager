@@ -198,7 +198,16 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				view_QuanLyHangHoa gdqlhh;
+				try {
+					gdqlhh = new view_QuanLyHangHoa();
+					gdqlhh.setLocationRelativeTo(null);
+					gdqlhh.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -253,7 +262,7 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				
 			}
 		});
 
@@ -263,7 +272,16 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				view_QuanLyKhachHang gdqlkh;
+				try {
+					gdqlkh = new view_QuanLyKhachHang();
+					gdqlkh.setLocationRelativeTo(null);
+					gdqlkh.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -313,13 +331,22 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 		panelNhanVien.setBackground(whiteColor);
 		contentPane.add(panelNhanVien);
 
-		JButton btnNhanVien = new JButton("Quản Lý Bàn");
+		JButton btnNhanVien = new JButton("Quản Lý Nhân Viên");
 		btnNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNhanVien.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				view_QuanLyNhanVien gdqlnv;
+				try {
+					gdqlnv = new view_QuanLyNhanVien();
+					gdqlnv.setLocationRelativeTo(null);
+					gdqlnv.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 		});
@@ -374,7 +401,16 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				view_QuanLyTaiKhoan gdqltk;
+				try {
+					gdqltk = new view_QuanLyTaiKhoan();
+					gdqltk.setLocationRelativeTo(null);
+					gdqltk.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 		});

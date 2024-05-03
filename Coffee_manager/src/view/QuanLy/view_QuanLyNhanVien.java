@@ -258,7 +258,15 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				try {
+					view_QuanLyBan gdqlban = new view_QuanLyBan();
+					gdqlban.setLocationRelativeTo(null);
+					gdqlban.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -268,7 +276,15 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				try {
+					view_QuanLyKhachHang gdqlkh = new view_QuanLyKhachHang();
+					gdqlkh.setLocationRelativeTo(null);
+					gdqlkh.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 

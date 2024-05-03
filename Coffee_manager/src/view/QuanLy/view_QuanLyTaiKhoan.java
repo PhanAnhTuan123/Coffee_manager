@@ -191,7 +191,16 @@ public class view_QuanLyTaiKhoan extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				view_QuanLyHangHoa gdqlhh;
+				try {
+					gdqlhh = new view_QuanLyHangHoa();
+					gdqlhh.setLocationRelativeTo(null);
+					gdqlhh.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -246,7 +255,16 @@ public class view_QuanLyTaiKhoan extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				view_QuanLyBan gdqlban;
+				try {
+					gdqlban = new view_QuanLyBan();
+					gdqlban.setLocationRelativeTo(null);
+					gdqlban.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -256,7 +274,16 @@ public class view_QuanLyTaiKhoan extends JFrame implements ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				view_QuanLyKhachHang gdqlkh;
+				try {
+					gdqlkh = new view_QuanLyKhachHang();
+					gdqlkh.setLocationRelativeTo(null);
+					gdqlkh.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
