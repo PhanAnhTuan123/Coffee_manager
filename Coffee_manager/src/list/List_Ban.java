@@ -41,5 +41,8 @@ public class List_Ban implements CRUD<Ban>{
 	public ArrayList<Ban>findByName(String name){
 		return new Ban_DAO().findByName(name);
 	}
-
+	public Ban getBanById(String id) {
+		return new Ban_DAO().getBanById(id);
+	}
+	
 }

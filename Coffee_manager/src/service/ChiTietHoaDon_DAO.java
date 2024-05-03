@@ -145,4 +145,31 @@ public class ChiTietHoaDon_DAO extends AbstractConnect implements CRUD<ChiTietHo
 		
 	}
 
+	public ArrayList<ChiTietHoaDon> getForCondition(String maHD) {
+		HangHoa_DAO hanghoa_dao = new HangHoa_DAO();
+		HoaDon_DAO hoadon_dao = new HoaDon_DAO();
+		ArrayList<ChiTietHoaDon>list = new ArrayList<ChiTietHoaDon>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		try {
+			String sql = "select * from chiTietHoaDon where maHD = '"+ maHD+"'";
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			while(rs.next()) {
+				list.add(new ChiTietHoaDon(
+						Integer.parseInt(rs.getString("SoLuong")),
+						hanghoa_dao.getHangHoaForID(rs.getString("maHH")),
+						hoadon_dao.getById(rs.getString("maHD")),
+						Float.parseFloat(rs.getString("price"))
+						)
+						);
+			}
+			
+		} catch (Exception e) {
+		
+			e.printStackTrace();
+		}
+		return list;
+	}
+
 }

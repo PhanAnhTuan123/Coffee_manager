@@ -133,5 +133,21 @@ public class KhachHang_DAO extends AbstractConnect  implements CRUD<KhachHang> {
         stmt.executeUpdate();
 	}
 
+	public KhachHang getById(String id) throws SQLException {
+		Statement statement = conn.createStatement();
+        String query = "SELECT * FROM KhachHang WHERE maKH = '" + id+"'";
+        ResultSet rs = statement.executeQuery(query);
+        if (rs.next()) {
+        	KhachHang employee = new KhachHang(
+        			rs.getString("maKH"),
+        			rs.getString("tenKH"),
+        			rs.getString("DiaChi"),
+        			rs.getString("SDT")
+        			);
+            return employee;
+        }
+        return null;
+	}
+
 
 }

@@ -15,8 +15,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -37,58 +40,23 @@ import javax.swing.table.DefaultTableModel;
 
 import db.ConnectDB;
 import list.List_Ban;
+import list.List_ChiTietHoaDon;
 import list.List_HangHoa;
+import list.List_HoaDon;
 import list.List_NhanVien;
 import model.Ban;
+import model.ChiTietHoaDon;
 import model.HangHoa;
+import model.HoaDon;
+import model.KhachHang;
 import model.NhanVien;
 import runapp.Login;
 import service.Ban_DAO;
 import service.HangHoa_DAO;
+import service.HoaDon_DAO;
 import testbutton.Buttontest;
 import view.QuanLy.Main_form_manager;
 import view.QuanLy.view_QuanLyNhanVien;
-
-//public class view_hoaDon extends JFrame implements ActionListener{
-//	private String tempMaBan;
-//	private Ban_DAO ban_dao;
-//	private List_Ban list_Ban;
-//	private static final long serialVersionUID = 1L;
-//	private JPanel contentPane;
-//	private JButton btnThem, btnXoa, btnSua, btntimkiem;
-//	private JLabel lbltennv;
-//	private JTable tableShowSP;
-//	private DefaultTableModel tableModel;
-//	private DefaultTableModel tableModelSanPham;
-//	private JTextField txtSDT, txtDiaChi, txtTimKiem, txtMaHD;
-//	Connection con = null;
-//	ResultSet rs = null;
-//	PreparedStatement pst = null;
-//	private JPanel panelHangHoa, panelDatHang, panelNhanVien, panelTaiKhoan, panelThongKe;
-//	Color customColor = new Color(255, 255, 255, 0);
-//	Color whiteColor = new Color(255, 255, 255, 0);
-//	private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh NV
-//	private List_NhanVien list_nv = new List_NhanVien();
-//	private JTable table_chonSP;
-//	private JTextField txtKhachHang;
-//	private JTextField txtTien;
-//	private JTextField txtChietKhau;
-//	private JTextField txtTongTien;
-//	private JTextField txtSoLuong;
-//	private HangHoa_DAO hanghoa_dao;
-//	private List_HangHoa list_hangHoa;
-//	private JTextField txtMaHangHoa;
-//	/**
-//	 * Launch the application.
-//	 */
-//	public static void main(String[] args) throws Exception {
-//		try {
-//			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//				if ("Nimbus".equals(info.getName())) {
-//					javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//					break;
-//
-
 
 public class view_hoaDon extends JFrame implements ActionListener{
 	private String tempMaBan;
@@ -122,6 +90,16 @@ public class view_hoaDon extends JFrame implements ActionListener{
 	private Buttontest btnTaoMoi;
 	private Buttontest btnDatHang;
 	private Buttontest btnHuy;
+	private view_showKhachHang view_showKH;
+	private JButton btnTimKhachHang;
+	private HoaDon_DAO daoHD;
+	private List_HoaDon listHD;
+	private List_ChiTietHoaDon listChiTietHD;
+	private view_showBan viewBan;
+	public Ban tempBan;
+	public KhachHang tempKH;
+	public NhanVien tempNV;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -651,21 +629,24 @@ public class view_hoaDon extends JFrame implements ActionListener{
 //	}
 	/**
 	 * Create the frame.
-	 * @throws SQLException 
+	 * @throws Exception 
 	 */
-	public view_hoaDon() throws SQLException {
+	public view_hoaDon() throws Exception {
 		try {
 			ConnectDB.getInstance().connect();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+		tempNV = new NhanVien();
+		tempNV.setMaNV("NV001");
 		ban_dao = new Ban_DAO();
 		list_Ban = new List_Ban();
 		hanghoa_dao = new HangHoa_DAO();
 		list_hangHoa = new List_HangHoa();
-		
-		
-//		initComponents();
+		view_showKH = new view_showKhachHang();
+		listHD = new List_HoaDon();
+		listChiTietHD = new List_ChiTietHoaDon();
+		initComponents();
 		setResizable(false);
 		setBackground(Color.WHITE);
 		setTitle("Giao Diện Quản Lý Bàn");
@@ -1277,7 +1258,7 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		contentPane.add(btnTaoMoi);
 		
 
-		JButton btnTimKhachHang = new JButton("");
+		btnTimKhachHang = new JButton("");
 		
 		btnTimKhachHang.setBounds(191, 246, 40, 30);
 		contentPane.add(btnTimKhachHang);
@@ -1348,6 +1329,8 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		
 		loadData();
 		refresh();
+		updateTongTien();
+		setHD();
 	}
 	
 	private void loadData() throws SQLException {
@@ -1412,22 +1395,47 @@ public class view_hoaDon extends JFrame implements ActionListener{
 			System.out.println("Them!!");
 			
 			addTableHangHoa();
+			updateTongTien();
 		}
 		if(e.getSource().equals(btnXoa)) {
 			removetablehangHoa();
+			updateTongTien();
 		}
 		if(e.getSource().equals(btnSua)) {
 			updateTableHangHoa();
+			updateTongTien();
 		}
 		if(e.getSource().equals(btnTaoMoi)) {
 			taoMoiTatCa();
+			updateTongTien();
 		}
 		if(e.getSource().equals(btnDatHang)) {
-			datHang();
+			try {
+				datHang();
+			}catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		if(e.getSource().equals(btnHuy)) {
 			huyBo();
+			updateTongTien();
 		}
+		if(e.getSource().equals(btnTimKhachHang)) {
+			try {
+				showViewKH();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	private void showViewKH() throws Exception {
+		view_showKH = new view_showKhachHang();
+		view_showKH.setView(this);
+		view_showKH.setVisible(true);
+		
 	}
 	private void taoMoiTatCa() {
 		System.out.println("Tao moi");
@@ -1435,6 +1443,7 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		txtChietKhau.setText("");
 		txtTongTien.setText("");
 		txtTien.setText("");
+		updateTongTien();
 	}
 	private void huyBo() {
 		System.out.println("Huy bo");
@@ -1445,14 +1454,63 @@ public class view_hoaDon extends JFrame implements ActionListener{
 			taoMoiTatCa();
 			refresh();
 		}
+		updateTongTien();
 	}
-	private void datHang() {
-		int choice = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn đặt hàng");
-		if(choice == 0) {
-			
+	private void datHang() throws Exception {
+		if(check_maKH()) {
+			int choice = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn đặt hàng");
+			if(choice == 0) {
+				setMaBan();
+				
+				refresh();
+				updateTongTien();
+				setHD();
+				
+			}else {
+				
+			}	
 		}else {
-			
+			JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng trước!!");
+			try {
+				showViewKH();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+	}
+	public void tienHanhDatHang() throws Exception {
+		
+		
+		HoaDon hd = new HoaDon(
+				txtMaHD.getText(),
+				new Date(),
+				(double) tongTien(),
+				 chietKhau(),
+				chietKhau(),
+				tempNV, 
+				tempKH, 
+				tempBan);
+		listHD.save(hd);
+		int n = tableModel.getRowCount();
+		for(int i = 0;i< n;i++) {
+			ChiTietHoaDon chhd = new ChiTietHoaDon(
+					Integer.parseInt(tableModel.getValueAt(i, 3).toString()),
+					list_hangHoa.getHangHoaForID(tableModel.getValueAt(i, 0).toString()),
+					hd,
+					Float.parseFloat(tableModel.getValueAt(i, 2).toString())
+					);
+			listChiTietHD.save(chhd);
+		}
+		JOptionPane.showMessageDialog(null, "Tạo hóa đơn thành công!!!");
+		refresh();
+		setHD();
+	}
+	private void setMaBan() throws Exception {
+		viewBan = new view_showBan();
+		viewBan.setVisible(true);
+		viewBan.setView(this);
+		
 	}
 	private void updateTableHangHoa() {
 		int n = tableShowSP.getSelectedRow();
@@ -1463,15 +1521,17 @@ public class view_hoaDon extends JFrame implements ActionListener{
 				, n, 4);
 		JOptionPane.showMessageDialog(null, "Updated!!");
 		refresh();
+		updateTongTien();
 	}
 	private void removetablehangHoa() {
 		int n = tableShowSP.getSelectedRow();
 		tableModel.removeRow(n);
 		JOptionPane.showMessageDialog(null, "Deleted!!");
 		refresh();
+		updateTongTien();
 		
 	}
-	private void refresh() {
+	public void refresh() {
 		btnThem.setEnabled(false);
 		btnSua.setEnabled(false);
 		btnXoa.setEnabled(false);
@@ -1479,34 +1539,109 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		txtMaHangHoa.setText("");
 		txtTimKiem.setText("");
 	}
+	public void refreshAfterDatHang() {
+		tableModel.setRowCount(0);
+		updateTongTien();
+		txtKhachHang.setText("");
+		setHD();
+		
+	}
 	public void addTableHangHoa() {
 		if(txtSoLuong.getText().equalsIgnoreCase("")) {
 			JOptionPane.showMessageDialog(null, "Vui lòng nhập số lượng!");
 		}else {
+		if(valid_selected(txtMaHangHoa.getText())) {
 			
-		
-		try {
-			HangHoa hh = list_hangHoa.get(Integer.parseInt(txtMaHangHoa.getText()));
-			int soLuong = Integer.parseInt(txtSoLuong.getText());
-			tableModel.addRow(new Object[] {
-					hh.getMaHH(),
-					hh.getTenHH(),
-					hh.getGia(),
-					soLuong,
-					hh.getGia()*soLuong
-			});
-			JOptionPane.showMessageDialog(null, "Added!!");
+			try {
+				HangHoa hh = list_hangHoa.get(Integer.parseInt(txtMaHangHoa.getText()));
+				int soLuong = Integer.parseInt(txtSoLuong.getText());
+				tableModel.addRow(new Object[] {
+						hh.getMaHH(),
+						hh.getTenHH(),
+						hh.getGia(),
+						soLuong,
+						hh.getGia()*soLuong
+				});
+				JOptionPane.showMessageDialog(null, "Added!!");
+				refresh();
+				
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}else {
+			JOptionPane.showMessageDialog(null, "Hàng hóa đã thêm trước đó!!");
 			refresh();
-			
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			updateTongTien();
 		}
+}
+		
+	}
+	public void submitMaKH(String maKH) {
+		txtKhachHang.setText(maKH);
+	}
+	
+	public void updateTongTien() {
+		int n = tableShowSP.getRowCount();
+		float tongTien = 0;
+		Locale localVN = new Locale("vi","VN");
+		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(localVN);
+		
+		for(int i=0;i<n;i++) {
+			tongTien+= Double.parseDouble(tableModel.getValueAt(i, 4).toString());
+		}
+		txtTien.setText(currencyFormat.format(tongTien));
+		txtChietKhau.setText(currencyFormat.format(tongTien/100));
+		txtTongTien.setText(currencyFormat.format(tongTien + tongTien/100));
+	}
+	public boolean valid_selected(String maSp) {
+		int n = tableShowSP.getRowCount();
+		for(int i=0;i<n;i++) {
+			if(tableModel.getValueAt(i, 0).toString().equalsIgnoreCase(maSp)) {
+				return false;
+			}
 		}
 		
+		return true;
+	}
+	public void setHD() {
+		String ma = listHD.sinhMa();
+		txtMaHD.setText(ma);
+	}
+	private boolean check_maKH() {
+		if(txtKhachHang.getText().equalsIgnoreCase("")) {
+			return false;
+		}
+		return true;
+	}
+	private float tongTien() {
+		float tien = 0;
+		int n = tableShowSP.getRowCount();
+		for(int i=0;i<n;i++) {
+			
+
+			tien+= (Double.parseDouble(tableModel.getValueAt(i, 3).toString())*Double.parseDouble(tableModel.getValueAt(i, 2).toString()));
+			System.out.println(tien);
+		}
+		return tien;
+	}
+	private int chietKhau() {
+		return (int) (tongTien()/100);
+	}
+	public Ban getTempBan() {
+		return tempBan;
+	}
+	public void setTempBan(Ban tempBan) {
+		this.tempBan = tempBan;
+	}
+	public KhachHang getTempKH() {
+		return tempKH;
+	}
+	public void setTempKH(KhachHang tempKH) {
+		this.tempKH = tempKH;
 	}
 	
 

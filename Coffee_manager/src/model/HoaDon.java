@@ -12,6 +12,10 @@ public class HoaDon {
 	private KhachHang khachHang;
 	private Ban ban;
 	
+	public HoaDon() {
+		super();
+	}
+
 	public HoaDon(String maHD, Date ngay, Double tongTien, Integer chietKhau, Integer diemTL, NhanVien nhanVien,
 			KhachHang khachHang, Ban ban) {
 		super();

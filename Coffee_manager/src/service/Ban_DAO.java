@@ -154,4 +154,34 @@ public class Ban_DAO extends AbstractConnect implements CRUD<Ban> {
 
 	}
 
+	public Ban getBanById(String id) {
+		Ban ban = new Ban();
+		try {
+			String sql = "select * from Ban where maBan = "+id;
+			Statement statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			while (rs.next()) {
+				ban = new Ban(rs.getString("maBan"), rs.getString("tenBan"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ban;
+	}
+
+	public Ban getById(String string) {
+		Ban ban = new Ban();
+		try {
+			String sql = "select * from Ban where maBan = '"+ string+"'";
+			Statement statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			while (rs.next()) {
+				ban = new Ban(rs.getString("maBan"), rs.getString("tenBan"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ban;
+	}
+
 }

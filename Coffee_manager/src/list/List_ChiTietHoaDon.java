@@ -41,5 +41,8 @@ public class List_ChiTietHoaDon implements CRUD<ChiTietHoaDon>{
 	public void deleteById(int id) throws SQLException {
 		new ChiTietHoaDon_DAO().deleteById(id);
 	}
+	public ArrayList<ChiTietHoaDon>getForCondition(String maHD){
+		return new ChiTietHoaDon_DAO().getForCondition(maHD);
+	}
 
 }

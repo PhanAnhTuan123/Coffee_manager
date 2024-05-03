@@ -65,6 +65,9 @@ private KhachHang_DAO kh_dao;
 	public ArrayList<KhachHang>findByName(String name){
 		return kh_dao.findByName(name);
 	}	
+	public KhachHang getById(String id) throws SQLException {
+		return kh_dao.getById(id);
+	}
 	
 
 }

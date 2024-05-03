@@ -58,11 +58,14 @@ public class HoaDon_DAO extends AbstractConnect implements CRUD<HoaDon> {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		while (rs.next()) {
 			try {
-				list.add(new HoaDon(rs.getString("maHD"), dateFormat.parse(rs.getString("Ngay")),
-						Double.parseDouble(rs.getString("TongTien")), Integer.parseInt(rs.getString("ChietKhau")),
-						Integer.parseInt(rs.getString("diemTL")), nv_dao.get(Integer.parseInt(rs.getString("maNV"))),
-						kh_dao.get(Integer.parseInt(rs.getString("maKH"))),
-						ban_dao.get(Integer.parseInt(rs.getString("maBan")))));
+				list.add(new HoaDon(rs.getString("maHD"), 
+						dateFormat.parse(rs.getString("Ngay")),
+						Double.parseDouble(rs.getString("TongTien")),
+						Integer.parseInt(rs.getString("ChietKhau")),
+						Integer.parseInt(rs.getString("diemTL")),
+						nv_dao.getNV(rs.getString("maNV")),
+						kh_dao.getById(rs.getString("maKH")),
+						ban_dao.getById(rs.getString("maBan"))));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -158,6 +161,39 @@ public class HoaDon_DAO extends AbstractConnect implements CRUD<HoaDon> {
 //			close(stm);
 			CRUD.close(stm);
 		}
+	}
+
+	public String sinhMa() {
+		String ma = "";
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		try {
+			String sql = "select top 1 maHD from HoaDon where maHD like 'HD%' order by maHD desc\r\n"
+					+ "";
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			while (rs.next()) {
+				ma = rs.getString("maHD");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		if (!ma.equalsIgnoreCase("")) {
+			ma = ma.substring(2);
+			int so = Integer.parseInt(ma) + 1;
+//			System.out.println(so);
+			String numberPart = String.format("%03d", so);
+			ma = "HD" + numberPart;
+		} else {
+			ma = "HD001";
+		}
+		System.out.println(ma);
+		return ma;
+	}
+	public HoaDon getById(String id) throws SQLException {
+		return null;
 	}
 
 }

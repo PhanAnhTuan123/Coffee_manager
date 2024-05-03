@@ -40,6 +40,9 @@ public class List_HoaDon implements CRUD<HoaDon>{
 	public void deleteById(int id) throws SQLException {
 		new HoaDon_DAO().deleteById(id);
 	}
+	public String sinhMa() {
+		return new HoaDon_DAO().sinhMa();
+	}
 
 	
 	

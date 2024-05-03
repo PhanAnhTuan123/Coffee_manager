@@ -14,6 +14,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -33,18 +36,21 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import db.ConnectDB;
+import list.List_HoaDon;
 import list.List_NhanVien;
+import model.HoaDon;
+import model.KhachHang;
 import model.NhanVien;
 import runapp.Login;
 import testbutton.Buttontest;
 import view.QuanLy.Main_form_manager;
 import view.QuanLy.view_QuanLyNhanVien;
 
-public class view_taoHoaDon extends JFrame implements ActionListener{
+public class view_xemHD extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JButton btnThem, btnXoa, btnSua, btnLamMoi, btntimkiem;
+	private JButton btnXem, btnLamMoi, btntimkiem;
 	private JLabel lbltennv;
 	private JRadioButton rdbtnNam, rdbtnNu;
 	private JComboBox<String> cboxChucVu;
@@ -58,7 +64,8 @@ public class view_taoHoaDon extends JFrame implements ActionListener{
 	Color customColor = new Color(255, 255, 255, 0);
 	Color whiteColor = new Color(255, 255, 255, 0);
 	private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh NV
-	private List_NhanVien list_nv = new List_NhanVien();
+	private List_HoaDon listHD;
+	private view_dialogXemHD view;
 	/**
 	 * Launch the application.
 	 */
@@ -89,15 +96,16 @@ public class view_taoHoaDon extends JFrame implements ActionListener{
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		view_taoHoaDon frame = new view_taoHoaDon();
+		view_xemHD frame = new view_xemHD();
 		frame.setVisible(true);
 	}
 	/**
 	 * Create the frame.
 	 * @throws SQLException 
 	 */
-	public view_taoHoaDon() throws SQLException {
-		initComponents();
+	public view_xemHD() throws SQLException {
+//		initComponents();
+		listHD = new List_HoaDon();
 		setResizable(false);
 		setBackground(Color.WHITE);
 		setTitle("Giao Diện Quản Lý Nhân Viên");
@@ -574,24 +582,19 @@ public class view_taoHoaDon extends JFrame implements ActionListener{
 		contentPane.add(btntimkiem);
 
 		// Khởi tạo các nút
-		btnThem = new JButton("Thêm");
-		btnXoa = new JButton("Xóa");
-		btnSua = new JButton("Sửa");
-		btnLamMoi = new JButton("Làm mới");
+		btnXem = new JButton("Xem");
+		btnXem.setEnabled(false);
+		btnLamMoi = new JButton("Làm Mới");
 
 		// Đặt vị trí cho các nút
-		btnThem.setBounds(250, 99, 100, 30);
-		btnXoa.setBounds(360, 99, 100, 30);
-		btnSua.setBounds(470, 99, 100, 30);
-		btnLamMoi.setBounds(580, 99, 100, 30);
+		btnXem.setBounds(250, 99, 100, 30);
+		btnLamMoi.setBounds(360, 99, 100, 30);
 		// Thêm các nút vào contentPane
-		contentPane.add(btnThem);
-		contentPane.add(btnXoa);
-		contentPane.add(btnSua);
+		contentPane.add(btnXem);
 		contentPane.add(btnLamMoi);
 
 		// Khởi tạo DefaultTableModel với các cột
-		String[] columnNames = { "Mã NV", "Tên NV","Địa Chỉ", "SĐT","Chức Vụ","Giới tính"}; // Thay đổi tên cột tùy ý
+		String[] columnNames = { "Mã Hóa Đơn", "Tên Khách Hàng","Tổng Tiền", "Chiết Khấu","Ngày"}; // Thay đổi tên cột tùy ý
 		tableModel = new DefaultTableModel(columnNames, 0);
 
 		// Khởi tạo JTable với DefaultTableModel
@@ -601,19 +604,9 @@ public class view_taoHoaDon extends JFrame implements ActionListener{
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int r = table.getSelectedRow();
-				txtHoTen.setText(tableModel.getValueAt(r,1).toString());
-				txtSDT.setText(tableModel.getValueAt(r,3).toString());
-				txtDiaChi.setText(tableModel.getValueAt(r,2).toString());
-				if(tableModel.getValueAt(r,5).toString().equals("Nam")) {
-					rdbtnNam.setSelected(true);
-				}else {
-					rdbtnNu.setSelected(true);
-				}
-				if(tableModel.getValueAt(r,4).toString().equals("Nhân Viên")) {
-					cboxChucVu.setSelectedIndex(0);
-				}else {
-					cboxChucVu.setSelectedIndex(1);
+				int i = table.getSelectedRow();
+				if(i>=0) {
+					btnXem.setEnabled(true);
 				}
 			}
 		});
@@ -630,9 +623,7 @@ public class view_taoHoaDon extends JFrame implements ActionListener{
 
 
 		// add su kien
-		btnThem.addActionListener(this);
-		btnXoa.addActionListener(this);
-		btnSua.addActionListener(this);
+		btnXem.addActionListener(this);
 		btnLamMoi.addActionListener(this);
 		btntimkiem.addActionListener(this);
 		
@@ -648,16 +639,20 @@ public class view_taoHoaDon extends JFrame implements ActionListener{
 	}
 	
 	private void loadData() throws SQLException {
-		
-		for(NhanVien nv : list_nv.getAll()) {
-			String gioiTinh = "";
-			if(nv.getGioiTinh() == true) {
-				gioiTinh = "Nam"; 
-			}else {
-				gioiTinh = "Nữ";
-			}
-			tableModel.addRow(new Object[] {nv.getMaNV(),nv.getTenNV(),nv.getDiaChi(),nv.getSdt(),nv.getChucVu(),gioiTinh});
+		tableModel.setRowCount(0);
+		Locale localVN = new Locale("vi","VN");
+		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(localVN);
+		SimpleDateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
+		for (HoaDon item : listHD.getAll()) {
+			tableModel.addRow(new Object[] {
+					item.getMaHD(),
+					item.getKhachHang().getTenKH(),
+					currencyFormat.format(item.getTongTien()),
+					item.getChietKhau(),
+					dateformat.format(item.getNgay())
+			});
 		}
+
 	}
 	
 	private void initComponents() {
@@ -685,7 +680,15 @@ public class view_taoHoaDon extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+	
+		int  i = table.getSelectedRow();
+		if(i >=0) {
+
+			view = new view_dialogXemHD();
+			view.refresh(tableModel.getValueAt(i, 0).toString(),tableModel.getValueAt(i, 2).toString());
+			view.setVisible(true);
+			
+		}
 		
 	}
 
