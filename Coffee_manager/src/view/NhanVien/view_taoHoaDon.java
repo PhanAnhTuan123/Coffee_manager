@@ -458,10 +458,16 @@ public class view_taoHoaDon extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất!", null,
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-					Login lg = new Login();
-					lg.setVisible(true);
-					lg.setLocationRelativeTo(null);
-					dispose();
+					 Login lg;
+						try {
+							lg = new Login();
+				            lg.setVisible(true);
+				            lg.setLocationRelativeTo(null);
+				            dispose();
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 				}
 			}
 		});

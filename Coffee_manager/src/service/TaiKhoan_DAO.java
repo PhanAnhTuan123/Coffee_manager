@@ -1,11 +1,13 @@
 package service;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 import constraint.CRUD;
+import model.NhanVien;
 import model.TaiKhoan;
 
 public class TaiKhoan_DAO implements CRUD<TaiKhoan> {
@@ -51,6 +53,18 @@ public class TaiKhoan_DAO implements CRUD<TaiKhoan> {
 	public void deleteById(int id) throws SQLException {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public TaiKhoan getTK(String id) throws SQLException {
+        Statement statement = conn.createStatement();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM TaiKhoan where userName = ?");
+        stmt.setNString(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+        	TaiKhoan taiKhoan = TaiKhoan.getFromResultSet(rs);
+            return taiKhoan;
+        }
+        return null;
 	}
 	
 }

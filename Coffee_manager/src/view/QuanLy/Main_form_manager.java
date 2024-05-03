@@ -232,7 +232,15 @@ public class Main_form_manager extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				try {
+					view_QuanLyBan gdqlban = new view_QuanLyBan();
+					gdqlban.setLocationRelativeTo(null);
+					gdqlban.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -461,10 +469,17 @@ public class Main_form_manager extends JFrame {
         logoutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 		        if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất!", null, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-		            Login lg = new Login();
-		            lg.setVisible(true);
-		            lg.setLocationRelativeTo(null);
-		            dispose();
+		            Login lg;
+					try {
+						lg = new Login();
+			            lg.setVisible(true);
+			            lg.setLocationRelativeTo(null);
+			            dispose();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
 		        }
 			}
 		});
