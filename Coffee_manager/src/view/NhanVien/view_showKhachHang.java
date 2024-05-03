@@ -9,12 +9,15 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import db.ConnectDB;
 import list.List_KhachHang;
 import model.KhachHang;
 import service.KhachHang_DAO;
 
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.sql.SQLException;
+
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import java.awt.Component;
@@ -47,8 +50,16 @@ public class view_showKhachHang extends JDialog {
 
 	/**
 	 * Create the dialog.
+	 * @throws Exception 
 	 */
-	public view_showKhachHang() {
+	public view_showKhachHang() throws Exception {
+		
+		try {
+			ConnectDB.getInstance().connect();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
 		kh_dao = new KhachHang_DAO();
 		list_kh = new List_KhachHang();
 		setBounds(100, 100, 485, 617);
@@ -125,11 +136,16 @@ public class view_showKhachHang extends JDialog {
 		loadData();
 	}
 
-	private void loadData() {
+	private void loadData() throws SQLException {
 		model.setRowCount(0);
-//		for (KhachHang kh : ) {
-//			
-//		}
+//		System.out.println(list_kh.getAll());
+		for (KhachHang kh : list_kh.getAll()) {
+			model.addRow(new Object[] {
+				kh.getMaKH(),
+				kh.getTenKH(),
+				kh.getSdt()
+			});
+		}
 	}
 
 	public view_taoHoaDon getView() {

@@ -119,6 +119,9 @@ public class view_hoaDon extends JFrame implements ActionListener{
 	private HangHoa_DAO hanghoa_dao;
 	private List_HangHoa list_hangHoa;
 	private JTextField txtMaHangHoa;
+	private Buttontest btnTaoMoi;
+	private Buttontest btnDatHang;
+	private Buttontest btnHuy;
 	/**
 	 * Launch the application.
 	 */
@@ -1238,7 +1241,7 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		txtTongTien.setEnabled(false);
 		contentPane.add(txtTongTien);
 		
-		Buttontest btnDatHang = new Buttontest();
+		btnDatHang = new Buttontest();
 		btnDatHang.setText("Đặt Hàng");
 		btnDatHang.setRippleColor(Color.WHITE);
 		btnDatHang.setForeground(SystemColor.text);
@@ -1247,7 +1250,7 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		btnDatHang.setBounds(986, 528, 144, 56);
 		contentPane.add(btnDatHang);
 		
-		Buttontest btnHuy = new Buttontest();
+		btnHuy = new Buttontest();
 		btnHuy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
@@ -1260,7 +1263,7 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		btnHuy.setBounds(696, 528, 144, 56);
 		contentPane.add(btnHuy);
 		
-		Buttontest btnTaoMoi = new Buttontest();
+		btnTaoMoi = new Buttontest();
 		btnTaoMoi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
@@ -1333,6 +1336,7 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		btnHuy.addActionListener(this);
 		btnDatHang.addActionListener(this);
 		btnTaoMoi.addActionListener(this);
+		
 		
 
 		JLabel background = new JLabel("");
@@ -1414,6 +1418,40 @@ public class view_hoaDon extends JFrame implements ActionListener{
 		}
 		if(e.getSource().equals(btnSua)) {
 			updateTableHangHoa();
+		}
+		if(e.getSource().equals(btnTaoMoi)) {
+			taoMoiTatCa();
+		}
+		if(e.getSource().equals(btnDatHang)) {
+			datHang();
+		}
+		if(e.getSource().equals(btnHuy)) {
+			huyBo();
+		}
+	}
+	private void taoMoiTatCa() {
+		System.out.println("Tao moi");
+		tableModel.setRowCount(0);
+		txtChietKhau.setText("");
+		txtTongTien.setText("");
+		txtTien.setText("");
+	}
+	private void huyBo() {
+		System.out.println("Huy bo");
+//		JOptionPane.showMessageDialog(btnDatHang, ban_dao);
+		int choice = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn hủy bỏ");
+//		System.out.println(choice);
+		if(choice == 0) {
+			taoMoiTatCa();
+			refresh();
+		}
+	}
+	private void datHang() {
+		int choice = JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn đặt hàng");
+		if(choice == 0) {
+			
+		}else {
+			
 		}
 	}
 	private void updateTableHangHoa() {
