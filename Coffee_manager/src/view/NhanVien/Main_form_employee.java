@@ -30,7 +30,7 @@ public class Main_form_employee extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Image img_logo = new ImageIcon(Main_form_manager.class.getResource("/image/logo.png")).getImage().getScaledInstance(100, 100,Image.SCALE_SMOOTH); 
-	private JLabel lbltennv;
+	public JLabel lbltennv;
 	Connection con = null;
 	ResultSet rs = null;
 	PreparedStatement pst = null;
@@ -87,14 +87,14 @@ public class Main_form_employee extends JFrame implements ActionListener {
         lblNvIcon.setBounds(760, 5, 40, 40); // Điều chỉnh tọa độ và kích thước của ảnh
         contentPane.add(lblNvIcon);
       
-		JLabel lblnhanvien = new JLabel("QL:");
+		JLabel lblnhanvien = new JLabel("NV:");
 		lblnhanvien.setForeground(Color.WHITE);
 		lblnhanvien.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblnhanvien.setBounds(801, 0, 39, 50);
 		lblnhanvien.setForeground(Color.WHITE);
 		contentPane.add(lblnhanvien);
 		
-		lbltennv = new JLabel("Trương Đại Lộc");
+		lbltennv = new JLabel("");
 		lbltennv.setForeground(Color.WHITE);
 		lbltennv.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lbltennv.setBounds(832, 0, 238, 50);
@@ -216,13 +216,6 @@ public class Main_form_employee extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					new view_QuanLyBan().setVisible(true);
-					dispose();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 				
 			}
 		});
@@ -428,10 +421,17 @@ public class Main_form_employee extends JFrame implements ActionListener {
         logoutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 		        if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất!", null, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-		            Login lg = new Login();
-		            lg.setVisible(true);
-		            lg.setLocationRelativeTo(null);
-		            dispose();
+		            Login lg;
+					try {
+						lg = new Login();
+			            lg.setVisible(true);
+			            lg.setLocationRelativeTo(null);
+			            dispose();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
 		        }
 			}
 		});

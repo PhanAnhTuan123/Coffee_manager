@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import constraint.CRUD;
+import model.HangHoa;
 import model.NhanVien;
 
 public class NhanVien_DAO implements CRUD<NhanVien> {
@@ -58,9 +59,7 @@ public class NhanVien_DAO implements CRUD<NhanVien> {
 		if (t == null) {
             throw new SQLException("Nhân Viên rỗng");
         }
-        String query = "UPDATE NhanVien"
-        		+ "SET TenNV = ?, DiaChi = ?,SDT = ?, ChucVu = ?,GioiTinh = ?"
-        		+ "WHERE maNV = ?;";
+        String query = "UPDATE NhanVien SET TenNV = ?,DiaChi = ?,SDT = ?, ChucVu = ?, GioiTinh = ? WHERE maNV = ?";
         PreparedStatement stmt = conn.prepareStatement(query);
         stmt.setNString(1, t.getTenNV());
         stmt.setNString(2, t.getDiaChi());
@@ -77,11 +76,64 @@ public class NhanVien_DAO implements CRUD<NhanVien> {
         stmt.setNString(1, t.getMaNV());
         stmt.executeUpdate();
 	}
+	
+	public String sinhMaNV() {
+		String ma = "";
+		try {
+			String sql = "select top 1 maNV from NhanVien where maNV like 'NV%' order by maNV desc";
+			Statement statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			while (rs.next()) {
+				ma = rs.getString("maNV");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		if (!ma.equalsIgnoreCase("")) {
+			ma = ma.substring(2);
+			int so = Integer.parseInt(ma) + 1;
+//			System.out.println(so);
+			String numberPart = String.format("%03d", so);
+			ma = "NV" + numberPart;
+		} else {
+			ma = "NV001";
+		}
+		System.out.println(ma);
+		return ma;
+	}
+	
+	public ArrayList<NhanVien> findByName(String ten) {
+		ArrayList<NhanVien> list = new ArrayList<NhanVien>();
+		try {
+			String sql = "select * from NhanVien where TenNV like '%" + ten + "%' ";
+			Statement statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			while (rs.next()) {
+				list.add(new NhanVien(rs.getString("maNV"),rs.getString("TenNV"),rs.getString("DiaChi"),rs.getString("SDT"),rs.getString("ChucVu"),rs.getBoolean("GioiTinh")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
 
 	@Override
 	public void deleteById(int id) throws SQLException {
 		PreparedStatement stmt = conn.prepareStatement("DELETE FROM NhanVien WHERE maNV = ?");
         stmt.setInt(1, id);
         stmt.executeUpdate();
+	}
+	
+	public String getTenNV(String id) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM NhanVien WHERE maNV = ?");
+        stmt.setNString(1, id);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+        	NhanVien employee = NhanVien.getFromResultSet(rs);
+            return employee.getTenNV();
+        }
+        return null;
+        
 	}
 }

@@ -1,64 +1,62 @@
 package list;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
+import constraint.CRUD;
+import model.HangHoa;
 import model.NhanVien;
+import service.HangHoa_DAO;
 import service.NhanVien_DAO;
 
-public class List_NhanVien{
+public class List_NhanVien implements CRUD<NhanVien>{
 	
-	private NhanVien_DAO nv_dao;
-
+private NhanVien_DAO nv_dao;
+	
 	public List_NhanVien() {
 		nv_dao = new NhanVien_DAO();
 	}
 	
-	public List<NhanVien> getAll() throws SQLException {
+	@Override
+	public ArrayList<NhanVien> getAll() throws SQLException {
 		return nv_dao.getAll();
 	}
-	
+
+	@Override
 	public NhanVien get(int id) throws SQLException {
 		return nv_dao.get(id);
 	}
-	
-	public boolean add(NhanVien nv) throws SQLException {
-		if(nv_dao.getAll().contains(nv)) {
-			return false;
-		}
-		nv_dao.save(nv);
-		return true;
+
+	@Override
+	public void save(NhanVien t) throws SQLException {
+		nv_dao.save(t);
+	}
+
+	@Override
+	public void update(NhanVien t) throws SQLException {
+		nv_dao.update(t);
+	}
+
+	@Override
+	public void delete(NhanVien t) throws SQLException {
+		nv_dao.delete(t);
+	}
+
+	@Override
+	public void deleteById(int id) throws SQLException {
+		nv_dao.deleteById(id);
 	}
 	
-	public boolean update(NhanVien nv) throws SQLException {
-		try {
-			nv_dao.update(nv);
-			return true;
-		}catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		
+	public String sinhMaNV() {
+		return nv_dao.sinhMaNV();
 	}
 	
-	public boolean remove(NhanVien nv) {
-		try {
-			nv_dao.delete(nv);
-			return true;
-		}catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-	}
-	
-	public boolean removeById(int id) {
-		try {
-			nv_dao.deleteById(id);
-			return true;
-		}catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+	public ArrayList<NhanVien>findByName(String name){
+		return nv_dao.findByName(name);
 	}	
+	
+	public String getTenNV(String id) throws SQLException {
+		return nv_dao.getTenNV(id);
+	}
 }

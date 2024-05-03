@@ -1,7 +1,6 @@
-package view.NhanVien;
+package view.QuanLy;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -15,35 +14,27 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import db.ConnectDB;
 import list.List_Ban;
-import list.List_NhanVien;
 import model.Ban;
-import model.NhanVien;
 import runapp.Login;
 import service.Ban_DAO;
 import testbutton.Buttontest;
-import view.QuanLy.Main_form_manager;
-import view.QuanLy.view_QuanLyNhanVien;
 
 public class view_QuanLyBan extends JFrame implements ActionListener{
 	private String tempMaBan;
@@ -75,16 +66,16 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 				}
 			}
 		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyBan.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyBan.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyBan.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(view_QuanLyNhanVien.class.getName()).log(java.util.logging.Level.SEVERE,
+			java.util.logging.Logger.getLogger(view_QuanLyBan.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		}
 		
@@ -122,7 +113,7 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 		contentPane.setLayout(null);
 
 		lblNvIcon = new JLabel("");
-		lblNvIcon.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/avt.png"))); // Thay đổi đường dẫn
+		lblNvIcon.setIcon(new ImageIcon(view_QuanLyBan.class.getResource("/image/avt.png"))); // Thay đổi đường dẫn
 																									// ảnh của bạn
 		lblNvIcon.setBounds(760, 5, 40, 40); // Điều chỉnh tọa độ và kích thước của ảnh
 		contentPane.add(lblNvIcon);
@@ -470,10 +461,16 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất!", null,
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-					Login lg = new Login();
-					lg.setVisible(true);
-					lg.setLocationRelativeTo(null);
-					dispose();
+					 Login lg;
+						try {
+							lg = new Login();
+				            lg.setVisible(true);
+				            lg.setLocationRelativeTo(null);
+				            dispose();
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 				}
 			}
 		});
@@ -515,7 +512,7 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 		contentPane.add(txtTimKiem);
 
 		btntimkiem = new JButton("");
-		btntimkiem.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/search.png")));
+		btntimkiem.setIcon(new ImageIcon(view_QuanLyBan.class.getResource("/image/search.png")));
 		btntimkiem.setBounds(1090, 99, 40, 30);
 		contentPane.add(btntimkiem);
 
@@ -590,7 +587,7 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 
 		JLabel background = new JLabel("");
 		background.setHorizontalAlignment(SwingConstants.CENTER);
-		background.setIcon(new ImageIcon(view_QuanLyNhanVien.class.getResource("/image/bgCF.jpg")));
+		background.setIcon(new ImageIcon(view_QuanLyBan.class.getResource("/image/bgCF.jpg")));
 		background.setBounds(0, 0, 1162, 613);
 		contentPane.add(background);
 		
@@ -736,5 +733,4 @@ public class view_QuanLyBan extends JFrame implements ActionListener{
 			return true;
 		}
 	}
-	
 }

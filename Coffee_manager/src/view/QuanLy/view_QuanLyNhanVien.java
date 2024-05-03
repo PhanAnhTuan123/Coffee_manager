@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,6 +32,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import list.List_NhanVien;
+import model.HangHoa;
 import model.NhanVien;
 import runapp.Login;
 import testbutton.Buttontest;
@@ -471,10 +474,16 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất!", null,
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-					Login lg = new Login();
-					lg.setVisible(true);
-					lg.setLocationRelativeTo(null);
-					dispose();
+					Login lg;
+					try {
+						lg = new Login();
+						lg.setVisible(true);
+						lg.setLocationRelativeTo(null);
+						dispose();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -622,6 +631,8 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 				}else {
 					cboxChucVu.setSelectedIndex(1);
 				}
+				btnSua.setEnabled(true);
+				btnXoa.setEnabled(true);
 			}
 		});
 		
@@ -650,12 +661,12 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		background.setBounds(0, 0, 1162, 613);
 		contentPane.add(background);
 		
-		
+		refresh();
 		loadData();
 	}
 	
 	private void loadData() throws SQLException {
-		
+		tableModel.setRowCount(0);
 		for(NhanVien nv : list_nv.getAll()) {
 			String gioiTinh = "";
 			if(nv.getGioiTinh() == true) {
@@ -690,9 +701,115 @@ public class view_QuanLyNhanVien extends JFrame implements ActionListener{
 		gdql.setVisible(true);
 	}
 
+	public void loadByName() {
+		String ten = txtTimKiem.getText();
+		ArrayList<NhanVien> tempList = new ArrayList<NhanVien>();
+		tempList = list_nv.findByName(ten);
+		tableModel.setRowCount(0);
+		for (NhanVien item : tempList) {
+			String gioiTinh = "";
+			if(item.getGioiTinh() == true) {
+				gioiTinh = "Nam"; 
+			}else {
+				gioiTinh = "Nữ";
+			}
+			tableModel.addRow(new Object[] {item.getMaNV(),item.getTenNV(),item.getDiaChi(),item.getSdt(),item.getChucVu(),gioiTinh});
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (e.getSource().equals(btnThem)) {
+			if (txtHoTen.getText().isEmpty() || txtSDT.getText().isEmpty() || txtDiaChi.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(this, "Vui lòng nhập thông tin đầy đủ");
+			} else {
+				NhanVien nhanVien = new NhanVien();
+				nhanVien.setMaNV(list_nv.sinhMaNV());
+				nhanVien.setTenNV(txtHoTen.getText());
+				nhanVien.setSdt(txtSDT.getText());
+				nhanVien.setDiaChi(txtDiaChi.getText());
+				if(rdbtnNam.isSelected()) {
+					nhanVien.setGioiTinh(true);
+				}else {
+					nhanVien.setGioiTinh(false);
+				}
+				if(cboxChucVu.getSelectedIndex() == 0) {
+					nhanVien.setChucVu("Nhân Viên");
+				}else {
+					nhanVien.setChucVu("Quản lý");
+				}
+
+				try {
+					list_nv.save(nhanVien);
+					loadData();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		if (e.getSource().equals(btnSua)) {
+			int r = table.getSelectedRow();
+			NhanVien nhanVien = new NhanVien();
+			nhanVien.setMaNV(tableModel.getValueAt(r, 0).toString());
+			nhanVien.setTenNV(txtHoTen.getText());
+			nhanVien.setSdt(txtSDT.getText());
+			nhanVien.setDiaChi(txtDiaChi.getText());
+			if(rdbtnNam.isSelected()) {
+				nhanVien.setGioiTinh(true);
+			}else {
+				nhanVien.setGioiTinh(false);
+			}
+			if(cboxChucVu.getSelectedIndex() == 0) {
+				nhanVien.setChucVu("Nhân Viên");
+			}else {
+				nhanVien.setChucVu("Quản lý");
+			}
+			try {
+				list_nv.update(nhanVien);
+				loadData();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Sửa thành công!!");
+		}
+		if (e.getSource().equals(btnXoa)) {
+			int r = table.getSelectedRow();
+			NhanVien nhanVien = new NhanVien();
+			nhanVien.setMaNV(tableModel.getValueAt(r, 0).toString());
+			try {
+				list_nv.delete(nhanVien);
+				loadData();
+				refresh();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Xóa thành công!!");
+		}
+		if (e.getSource().equals(btntimkiem)) {
+//			String ten = txtTimKiem.getText();
+			loadByName();
+
+		}
+		if (e.getSource().equals(btnLamMoi)) {
+			try {
+				loadData();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		refresh();
+	}
+
+	public void refresh() {
+		txtHoTen.setText("");
+		txtDiaChi.setText("");
+		txtSDT.setText("");
+		txtTimKiem.setText("");
+		btnXoa.setEnabled(false);
+		btnSua.setEnabled(false);
+		btnThem.setEnabled(true);
+
 	}
 }

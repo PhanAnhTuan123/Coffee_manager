@@ -64,4 +64,8 @@ public class List_TaiKhoan {
 			return false;
 		}
 	}
+	
+	public TaiKhoan getTK(String id) throws SQLException {
+		return tk_dao.getTK(id);
+	}
 }
