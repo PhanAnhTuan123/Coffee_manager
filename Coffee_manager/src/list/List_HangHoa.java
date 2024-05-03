@@ -94,6 +94,8 @@ public class List_HangHoa implements CRUD<HangHoa>{
 		return hh_dao.findByName(name);
 	}
 
-	
+	public HangHoa getHangHoaForID(String id) throws SQLException {
+		return hh_dao.getHangHoaForID(id);
+	}
 
 }

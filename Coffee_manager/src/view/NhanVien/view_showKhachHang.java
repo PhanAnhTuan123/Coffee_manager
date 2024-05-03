@@ -9,27 +9,43 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import db.ConnectDB;
 import list.List_KhachHang;
 import model.KhachHang;
 import service.KhachHang_DAO;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
+import java.sql.SQLException;
+
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import java.awt.Component;
 import javax.swing.JTable;
 
-public class view_showKhachHang extends JDialog {
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class view_showKhachHang extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 	private JTextField txtMaKH;
+<<<<<<< HEAD
+=======
+	public view_hoaDon view;
+>>>>>>> f0c3a1419ab1d031a6f69c26b7593b71f5af5152
 	private DefaultTableModel model;
 	private List_KhachHang list_kh;
 	private KhachHang_DAO kh_dao;
 	private JTable table;
+	private JButton okButton;
+	private JButton cancelButton;
 
 	/**
 	 * Launch the application.
@@ -46,8 +62,16 @@ public class view_showKhachHang extends JDialog {
 
 	/**
 	 * Create the dialog.
+	 * @throws Exception 
 	 */
-	public view_showKhachHang() {
+	public view_showKhachHang() throws Exception {
+		
+		try {
+			ConnectDB.getInstance().connect();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
 		kh_dao = new KhachHang_DAO();
 		list_kh = new List_KhachHang();
 		setBounds(100, 100, 485, 617);
@@ -83,6 +107,15 @@ public class view_showKhachHang extends JDialog {
 			contentPanel.add(scrollPane);
 			{
 				table = new JTable();
+				table.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						int n = table.getSelectedRow();
+						if(n >=0) {
+							txtMaKH.setText(model.getValueAt(n, 0).toString());
+						}
+					}
+				});
 				scrollPane.setViewportView(table);
 			}
 		}
@@ -107,30 +140,72 @@ public class view_showKhachHang extends JDialog {
 				txtMaKH = new JTextField();
 				txtMaKH.setFont(new Font("Tahoma", Font.BOLD, 15));
 				buttonPane.add(txtMaKH);
+				txtMaKH.setEnabled(false);
 				txtMaKH.setColumns(10);
 			}
 			{
-				JButton okButton = new JButton("OK");
+				okButton = new JButton("OK");
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				cancelButton = new JButton("Cancel");
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
 		}
 		loadData();
+		okButton.addActionListener(this);
+		cancelButton.addActionListener(this);
 	}
 
-	private void loadData() {
+	private void loadData() throws SQLException {
 		model.setRowCount(0);
-//		for (KhachHang kh : ) {
-//			
-//		}
+//		System.out.println(list_kh.getAll());
+		for (KhachHang kh : list_kh.getAll()) {
+			model.addRow(new Object[] {
+				kh.getMaKH(),
+				kh.getTenKH(),
+				kh.getSdt()
+			});
+		}
 	}
 
+<<<<<<< HEAD
+=======
+
+	public view_hoaDon getView() {
+		return view;
+	}
+
+	public void setView(view_hoaDon view) {
+		this.view = view;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if(arg0.getSource().equals(okButton)) {
+			System.out.println("OK!");
+			onSubmitButtonClick();
+		}
+		if(arg0.getSource().equals(cancelButton)) {
+			System.out.println("Cancel");
+		}
+	}
+	private void onSubmitButtonClick() {
+		if(txtMaKH.getText().equalsIgnoreCase("")) {
+			JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng cần thêm.");
+		}else {	
+		
+		view.submitMaKH(txtMaKH.getText());
+		KhachHang kh= new KhachHang();
+		kh.setMaKH(txtMaKH.getText());
+		view.setTempKH(kh);
+		dispose();
+		}
+		}
+>>>>>>> f0c3a1419ab1d031a6f69c26b7593b71f5af5152
 	
 
 }

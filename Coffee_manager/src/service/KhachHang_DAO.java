@@ -18,12 +18,19 @@ public class KhachHang_DAO extends AbstractConnect  implements CRUD<KhachHang> {
 	@Override
 	public ArrayList<KhachHang> getAll() throws SQLException {
 		ArrayList<KhachHang> employees = new ArrayList<>();
+//		ConnectDB.getInstance();
         Statement statement = conn.createStatement();
         String query = "SELECT * FROM KhachHang;";
         ResultSet rs = statement.executeQuery(query);
         while (rs.next()) {
-        	KhachHang employee = KhachHang.getFromResultSet(rs);
-            employees.add(employee);
+//        	KhachHang employee = KhachHang.getFromResultSet(rs);
+            
+        	employees.add(new KhachHang(
+        			rs.getString("maKH"),
+        			rs.getString("tenKH"),
+        			rs.getString("DiaChi"),
+        			rs.getString("SDT")
+        			));
         }
         return employees;
 	}
@@ -124,6 +131,22 @@ public class KhachHang_DAO extends AbstractConnect  implements CRUD<KhachHang> {
 		PreparedStatement stmt = conn.prepareStatement("DELETE FROM KhachHang WHERE maKH = ?");
         stmt.setInt(1, id);
         stmt.executeUpdate();
+	}
+
+	public KhachHang getById(String id) throws SQLException {
+		Statement statement = conn.createStatement();
+        String query = "SELECT * FROM KhachHang WHERE maKH = '" + id+"'";
+        ResultSet rs = statement.executeQuery(query);
+        if (rs.next()) {
+        	KhachHang employee = new KhachHang(
+        			rs.getString("maKH"),
+        			rs.getString("tenKH"),
+        			rs.getString("DiaChi"),
+        			rs.getString("SDT")
+        			);
+            return employee;
+        }
+        return null;
 	}
 
 

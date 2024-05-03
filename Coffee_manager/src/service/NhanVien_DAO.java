@@ -134,6 +134,15 @@ public class NhanVien_DAO implements CRUD<NhanVien> {
             return employee.getTenNV();
         }
         return null;
-        
+	}
+	public NhanVien getNV(String id) throws SQLException {
+		Statement statement = conn.createStatement();
+        String query = "SELECT * FROM NhanVien WHERE maNV = '" + id+ "'";
+        ResultSet rs = statement.executeQuery(query);
+        if (rs.next()) {
+        	NhanVien employee = NhanVien.getFromResultSet(rs);
+            return employee;
+        }
+        return null;
 	}
 }
