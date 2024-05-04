@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
+import db.ConnectDB;
 import runapp.Login;
 import testbutton.Buttontest;
 import view.QuanLy.Main_form_manager;
@@ -41,8 +42,9 @@ public class Main_form_employee extends JFrame implements ActionListener {
 	
 	/**
 	 * Launch the application.
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		try {
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
@@ -62,6 +64,11 @@ public class Main_form_employee extends JFrame implements ActionListener {
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
 			java.util.logging.Logger.getLogger(Main_form_manager.class.getName()).log(java.util.logging.Level.SEVERE, null,
 					ex);
+		}
+		try {
+			ConnectDB.getInstance().connect();
+		}catch(SQLException e) {
+			e.printStackTrace();
 		}
 		Main_form_employee frame = new Main_form_employee();
 		frame.setVisible(true);
@@ -116,60 +123,6 @@ public class Main_form_employee extends JFrame implements ActionListener {
 		topPanel.setBackground(customColor); // Thay đổi ở đây
 		contentPane.add(topPanel);
 
-		// Thêm toolbar "Hàng hóa"
-		JToolBar qlyHangHoaToolbar = new JToolBar();
-		qlyHangHoaToolbar.setFloatable(false);
-		qlyHangHoaToolbar.setMargin(new java.awt.Insets(-5, -5, 0, -5));
-		testbutton.Buttontest qlyHangHoaButton = new Buttontest();
-		qlyHangHoaButton.setText("Hàng hóa");
-		qlyHangHoaButton.setFont(new Font("Open Sans", Font.BOLD, 15));
-		qlyHangHoaButton.setForeground(SystemColor.text);
-		qlyHangHoaButton.setRippleColor(new Color(255, 255, 255));
-		qlyHangHoaButton.setBackground(new Color(255, 128, 64));
-		qlyHangHoaButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
-					panelHangHoa.setVisible(false);
-					panelDatHang.setVisible(false);
-					panelNhanVien.setVisible(false);
-					panelTaiKhoan.setVisible(false);
-					panelThongKe.setVisible(false);
-				} else {
-					panelHangHoa.setVisible(true);
-				}
-			}
-		});
-		qlyHangHoaToolbar.add(qlyHangHoaButton);
-		qlyHangHoaToolbar.setBackground(customColor); // Thay đổi ở đây
-		topPanel.add(qlyHangHoaToolbar);
-
-		panelHangHoa = new JPanel() {
-			private static final long serialVersionUID = 1L;
-			protected void paintComponent(Graphics g) {
-				g.setColor(getBackground());
-				g.fillRect(0, 0, getWidth(), getHeight());
-				super.paintComponent(g);
-			}
-		};
-		panelHangHoa.setBounds(0, 49, 1175, 47); // Điều chỉnh tọa độ và kích thước của panel theo ý muốn
-		panelHangHoa.setLayout(new FlowLayout(FlowLayout.LEFT)); // Thay đổi ở đây
-		panelHangHoa.setVisible(false); // tắt/ẩn panel
-		panelHangHoa.setBackground(whiteColor);
-		contentPane.add(panelHangHoa);
-
-		JButton btnqlyMonAn = new JButton("Quản Lý Món Ăn");
-		btnqlyMonAn.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnqlyMonAn.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				
-			}
-		});
-
-		panelHangHoa.add(btnqlyMonAn);
-
 		// Thêm toolbar "dịch vụ"
 		JToolBar datHangToolbar = new JToolBar();
 		datHangToolbar.setFloatable(false);
@@ -182,12 +135,8 @@ public class Main_form_employee extends JFrame implements ActionListener {
 		datHangButton.setBackground(new Color(46, 139, 87));
 		datHangButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
-					panelHangHoa.setVisible(false);
+				if (panelDatHang.isVisible()) {
 					panelDatHang.setVisible(false);
-					panelNhanVien.setVisible(false);
-					panelTaiKhoan.setVisible(false);
-					panelThongKe.setVisible(false);
 				} else {
 					panelDatHang.setVisible(true);
 				}
@@ -210,203 +159,46 @@ public class Main_form_employee extends JFrame implements ActionListener {
 		panelDatHang.setBackground(whiteColor);
 		contentPane.add(panelDatHang);
 
-		JButton btnBan = new JButton("Quản Lý Bàn");
-		btnBan.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnBan.addActionListener(new ActionListener() {
+		JButton btnTaoHoaDon = new JButton("Tạo Hóa Đơn");
+		btnTaoHoaDon.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnTaoHoaDon.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		
-		JButton btnKhachHang = new JButton("Quản Lý Khách Hàng");
-		btnKhachHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnKhachHang.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		
-		panelDatHang.add(btnKhachHang);
-		panelDatHang.add(btnBan);
-
-		// Thêm toolbar "nhân viên"
-		JToolBar nhanVienToolbar = new JToolBar();
-		nhanVienToolbar.setFloatable(false);
-		nhanVienToolbar.setMargin(new java.awt.Insets(-5, -5, 0, -5));
-		testbutton.Buttontest nhanVienButton = new Buttontest();
-		nhanVienButton.setText("Nhân Viên");
-		nhanVienButton.setFont(new Font("Open Sans", Font.BOLD, 15));
-		nhanVienButton.setForeground(SystemColor.text);
-		nhanVienButton.setRippleColor(new Color(255, 255, 255));
-		nhanVienButton.setBackground(new Color(255, 0, 128));
-		nhanVienButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
-					panelHangHoa.setVisible(false);
-					panelDatHang.setVisible(false);
-					panelNhanVien.setVisible(false);
-					panelTaiKhoan.setVisible(false);
-					panelThongKe.setVisible(false);
-				} else {
-					panelNhanVien.setVisible(true);
+				try {
+					view_hoaDon gdTaoHD = new view_hoaDon();
+					gdTaoHD.lbltennv.setText(lbltennv.getText());
+					gdTaoHD.setVisible(true);
+					gdTaoHD.setLocationRelativeTo(null);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
-		nhanVienToolbar.add(nhanVienButton);
-		nhanVienToolbar.setBackground(customColor);
-		topPanel.add(nhanVienToolbar);
-				
-		panelNhanVien = new JPanel() {
-			private static final long serialVersionUID = 1L;
-
-			protected void paintComponent(Graphics g) {
-				g.setColor(getBackground());
-				g.fillRect(0, 0, getWidth(), getHeight());
-				super.paintComponent(g);
-			}
-		};
-		panelNhanVien.setBounds(0, 49, 1175, 47); // Điều chỉnh tọa độ và kích thước của panel theo ý muốn
-		panelNhanVien.setLayout(new FlowLayout(FlowLayout.LEFT)); // Thay đổi ở đây
-		panelNhanVien.setVisible(false); // tắt/ẩn panel
-		panelNhanVien.setBackground(whiteColor);
-		contentPane.add(panelNhanVien);
 		
-		JButton btnNhanVien = new JButton("Quản Lý Nhân Viên");
-		btnNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnNhanVien.addActionListener(new ActionListener() {
-
+		JButton btnXemHoaDon = new JButton("Xem Hóa Đơn");
+		btnXemHoaDon.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnXemHoaDon.addActionListener(new ActionListener() {
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-			}
-			
-		});
-		panelNhanVien.add(btnNhanVien);
-		
-		// Thêm toolbar "tài khoản"
-		JToolBar taiKhoanToolbar = new JToolBar();
-		taiKhoanToolbar.setFloatable(false);
-		taiKhoanToolbar.setMargin(new java.awt.Insets(-5, -5, 0, -5));
-		testbutton.Buttontest taiKhoanButton = new Buttontest();
-		taiKhoanButton.setText("Tài Khoản");
-		taiKhoanButton.setFont(new Font("Open Sans", Font.BOLD, 15));
-		taiKhoanButton.setForeground(SystemColor.text);
-		taiKhoanButton.setRippleColor(new Color(255, 255, 255));
-		taiKhoanButton.setBackground(new Color(99, 176, 28));
-		taiKhoanButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
-					panelHangHoa.setVisible(false);
-					panelDatHang.setVisible(false);
-					panelNhanVien.setVisible(false);
-					panelTaiKhoan.setVisible(false);
-					panelThongKe.setVisible(false);
-				} else {
-					panelTaiKhoan.setVisible(true);
+				try {
+					view_xemHD gdXemHD = new view_xemHD();
+					gdXemHD.setVisible(true);
+					gdXemHD.setLocationRelativeTo(null);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
-		taiKhoanToolbar.add(taiKhoanButton);
-		taiKhoanToolbar.setBackground(customColor);
-		topPanel.add(taiKhoanToolbar);
 		
-		panelTaiKhoan = new JPanel() {
-			private static final long serialVersionUID = 1L;
+		panelDatHang.add(btnTaoHoaDon);
+		panelDatHang.add(btnXemHoaDon);
 
-			protected void paintComponent(Graphics g) {
-				g.setColor(getBackground());
-				g.fillRect(0, 0, getWidth(), getHeight());
-				super.paintComponent(g);
-			}
-		};
-		panelTaiKhoan.setBounds(0, 49, 1175, 47); // Điều chỉnh tọa độ và kích thước của panel theo ý muốn
-		panelTaiKhoan.setLayout(new FlowLayout(FlowLayout.LEFT)); // Thay đổi ở đây
-		panelTaiKhoan.setVisible(false); // tắt/ẩn panel
-		panelTaiKhoan.setBackground(whiteColor);
-		contentPane.add(panelTaiKhoan);
-		
-		JButton btnTaiKhoan = new JButton("Quản Lý Tài Khoản");
-		btnTaiKhoan.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnTaiKhoan.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-
-		});
-		panelTaiKhoan.add(btnTaiKhoan);
-		
-		// thêm toolbar "thống kê"
-		JToolBar thongKeToolbar = new JToolBar();
-		thongKeToolbar.setFloatable(false);
-		thongKeToolbar.setMargin(new java.awt.Insets(-5, -5, 0, -5));
-		testbutton.Buttontest thongKeButton = new Buttontest();
-		thongKeButton.setText("Thống Kê");
-		thongKeButton.setFont(new Font("Open Sans", Font.BOLD, 15));
-		thongKeButton.setForeground(SystemColor.text);
-		thongKeButton.setRippleColor(new Color(255, 255, 255));
-		thongKeButton.setBackground(new Color(100, 100, 255));
-		thongKeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
-					panelHangHoa.setVisible(false);
-					panelDatHang.setVisible(false);
-					panelNhanVien.setVisible(false);
-					panelTaiKhoan.setVisible(false);
-					panelThongKe.setVisible(false);
-				} else {
-					panelThongKe.setVisible(true);
-				}
-			}
-		});
-		thongKeToolbar.add(thongKeButton);
-		thongKeToolbar.setBackground(customColor);
-		topPanel.add(thongKeToolbar);
-		
-		panelThongKe = new JPanel() {
-			private static final long serialVersionUID = 1L;
-
-			protected void paintComponent(Graphics g) {
-				g.setColor(getBackground());
-				g.fillRect(0, 0, getWidth(), getHeight());
-				super.paintComponent(g);
-			}
-		};
-		panelThongKe.setBounds(0, 49, 1175, 47); // Điều chỉnh tọa độ và kích thước của panel theo ý muốn
-		panelThongKe.setLayout(new FlowLayout(FlowLayout.LEFT)); // Thay đổi ở đây
-		panelThongKe.setVisible(false); // tắt/ẩn panel
-		panelThongKe.setBackground(whiteColor);
-		contentPane.add(panelThongKe);
-		
-		JButton btnThongKeNhanVien = new JButton("Thống Kê Nhân Viên");
-		btnThongKeNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnThongKeNhanVien.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
-			
-			}
-			});
-		JButton btnThongKeDoanhThu = new JButton("Thống Kê Doanh Thu"); 
-		btnThongKeDoanhThu.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnThongKeDoanhThu.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			});
-		
-		panelThongKe.add(btnThongKeNhanVien);
-		panelThongKe.add(btnThongKeDoanhThu);
 		
 		// Create logout button
 		JToolBar logoutToolBar = new JToolBar();

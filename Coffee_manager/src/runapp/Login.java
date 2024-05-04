@@ -52,7 +52,8 @@ public class Login extends JFrame implements ActionListener {
 	 */
 	/**
 	 * Create the frame.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 
 	public Login() throws Exception {
@@ -101,7 +102,16 @@ public class Login extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					try {
+						ConnectDB.getInstance().connect();
+					} catch (SQLException e2) {
+						e2.printStackTrace();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					dangNhap();
+
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -188,7 +198,7 @@ public class Login extends JFrame implements ActionListener {
 		}
 		try {
 			ConnectDB.getInstance().connect();
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		Login run = new Login();
@@ -213,28 +223,61 @@ public class Login extends JFrame implements ActionListener {
 
 	private void dangNhap() throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
+//		if (txtUser.getText().trim().isEmpty() || passMk.getPassword().length == 0) {
+//			JOptionPane.showMessageDialog(null, "Vui lòng nhập tài khoản và mật khẩu.");
+//			return; // Exit the method if fields are empty
+//		}
+//		if (txtUser.getText().equals("TK001")) {
+//			Main_form_manager gdqly = new Main_form_manager();
+//			gdqly.setVisible(true);
+//			gdqly.setLocationRelativeTo(null);
+//			dispose();
+//		}else {
+//			TaiKhoan tk = list_tk.get(txtUser.getText());
+//			if (tk.getPassWord().equals(new String(passMk.getPassword()))) {
+//				String tenNhanVien = list_nv.getTenNV(txtUser.getText());
+//				Main_form_employee gdnv = new Main_form_employee();
+//				gdnv.lbltennv.setText(tenNhanVien);
+//				gdnv.setVisible(true);
+//				gdnv.setLocationRelativeTo(null);
+//				dispose();
+//			}else {
+//				JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu sai");
+//			}
+//		}
+		// Kiểm tra xem các trường nhập liệu có bị để trống không
 		if (txtUser.getText().trim().isEmpty() || passMk.getPassword().length == 0) {
-			JOptionPane.showMessageDialog(null, "Vui lòng nhập tài khoản và mật khẩu.");
-			return; // Exit the method if fields are empty
+		    JOptionPane.showMessageDialog(null, "Vui lòng nhập tài khoản và mật khẩu.");
+		    return; // Thoát khỏi phương thức nếu các trường còn trống
 		}
 
-		if (txtUser.getText().equals("TK001")) {
-			Main_form_manager gdqly = new Main_form_manager();
-			gdqly.setVisible(true);
-			gdqly.setLocationRelativeTo(null);
-			dispose();
+		String username = txtUser.getText().trim();
+		char[] passwordChar = passMk.getPassword();
+		String password = new String(passwordChar);
+
+		// Kiểm tra đăng nhập cho tài khoản 'TK001'
+		if (username.equals("TK001") && password.equals("123")) {
+		    // Đăng nhập thành công, mở Main_form_manager
+		    Main_form_manager gdqly = new Main_form_manager();
+		    gdqly.setVisible(true);
+		    gdqly.setLocationRelativeTo(null);
+		    dispose(); // Đóng cửa sổ hiện tại
 		} else {
-			TaiKhoan tk = list_tk.getTK(txtUser.getText());
-			if (tk.getPassWord().equals(new String(passMk.getPassword()))) {
-				String tenNhanVien = list_nv.getTenNV(txtUser.getText());
-				Main_form_employee gdnv = new Main_form_employee();
-				gdnv.lbltennv.setText(tenNhanVien);
-				gdnv.setVisible(true);
-				gdnv.setLocationRelativeTo(null);
-				dispose();
-			} else {
-				JOptionPane.showMessageDialog(this, "Mật khẩu sai");
-			}
+		    // Kiểm tra đăng nhập cho tài khoản khác
+		    TaiKhoan tk = list_tk.get(username);
+		    if (tk != null && tk.getPassWord().equals(password)) {
+		        // Mật khẩu đúng, đăng nhập thành công, mở Main_form_employee
+		        String tenNhanVien = list_nv.getTenNV(username);
+		        Main_form_employee gdnv = new Main_form_employee();
+		        gdnv.lbltennv.setText(tenNhanVien);
+		        gdnv.setVisible(true);
+		        gdnv.setLocationRelativeTo(null);
+		        dispose(); // Đóng cửa sổ hiện tại
+		    } else {
+		        // Thông báo lỗi nếu tài khoản hoặc mật khẩu không đúng
+		        JOptionPane.showMessageDialog(null, "Tên tài khoản hoặc mật khẩu sai");
+		    }
 		}
+
 	}
 }

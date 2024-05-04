@@ -17,29 +17,27 @@ import model.KhachHang;
 public class KhachHang_DAO extends AbstractConnect  implements CRUD<KhachHang> {
 	@Override
 	public ArrayList<KhachHang> getAll() throws SQLException {
-		ArrayList<KhachHang> employees = new ArrayList<>();
+		ArrayList<KhachHang> customers = new ArrayList<>();
 //		ConnectDB.getInstance();
         Statement statement = conn.createStatement();
         String query = "SELECT * FROM KhachHang;";
         ResultSet rs = statement.executeQuery(query);
-        while (rs.next()) {
-//        	KhachHang employee = KhachHang.getFromResultSet(rs);
-            
-        	employees.add(new KhachHang(
+        while (rs.next()) {      
+        	customers.add(new KhachHang(
         			rs.getString("maKH"),
         			rs.getString("tenKH"),
         			rs.getString("DiaChi"),
         			rs.getString("SDT")
         			));
         }
-        return employees;
+        return customers;
 	}
 
 	@Override
-	public KhachHang get(int id) throws SQLException {
-		Statement statement = conn.createStatement();
-        String query = "SELECT * FROM KhachHang WHERE maKH = " + id;
-        ResultSet rs = statement.executeQuery(query);
+	public KhachHang get(String id) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM KhachHang WHERE maKH = ?");
+        stmt.setNString(1, id);
+        ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
         	KhachHang employee = KhachHang.getFromResultSet(rs);
             return employee;
@@ -69,12 +67,13 @@ public class KhachHang_DAO extends AbstractConnect  implements CRUD<KhachHang> {
 		if (t == null) {
             throw new SQLException("Khách Hàng rỗng");
         }
-        String query = "UPDATE KhachHang SET TenKH = ?,DiaChi = ?,SDT = ?";
+        String query = "UPDATE KhachHang SET TenKH = ?,DiaChi = ?,SDT = ? WHERE maKH = ?";
         PreparedStatement stmt = conn.prepareStatement(query);
-        stmt.setNString(1, t.getMaKH());
-        stmt.setNString(2, t.getTenKH());
-        stmt.setNString(3, t.getDiaChi());
-        stmt.setNString(4, t.getSdt());
+
+        stmt.setNString(1, t.getTenKH());
+        stmt.setNString(2, t.getDiaChi());
+        stmt.setNString(3, t.getSdt());
+        stmt.setNString(4, t.getMaKH());
         stmt.executeUpdate();
 	}
 
@@ -88,7 +87,7 @@ public class KhachHang_DAO extends AbstractConnect  implements CRUD<KhachHang> {
 	public String sinhMaKH() {
 		String ma = "";
 		try {
-			String sql = "select top 1 maKH from KhachHang where maNV like 'NV%' order by maKH desc";
+			String sql = "select top 1 maKH from KhachHang where maKH like 'KH%' order by maKH desc";
 			Statement statement = conn.createStatement();
 			ResultSet rs = statement.executeQuery(sql);
 			while (rs.next()) {

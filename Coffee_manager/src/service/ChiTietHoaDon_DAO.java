@@ -1,6 +1,7 @@
 package service;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,8 +30,8 @@ public class ChiTietHoaDon_DAO extends AbstractConnect implements CRUD<ChiTietHo
 			while(rs.next()) {
 				list.add(new ChiTietHoaDon(
 						Integer.parseInt(rs.getString("SoLuong")),
-						hanghoa_dao.get(Integer.parseInt(rs.getString("maHH"))),
-						hoadon_dao.get(Integer.parseInt(rs.getString("maHD"))),
+						hanghoa_dao.get(rs.getString("maHH")),
+						hoadon_dao.get(rs.getString("maHD")),
 						Float.parseFloat(rs.getString("price"))
 						)
 						);
@@ -45,7 +46,7 @@ public class ChiTietHoaDon_DAO extends AbstractConnect implements CRUD<ChiTietHo
 	}
 
 	@Override
-	public ChiTietHoaDon get(int id) throws SQLException {
+	public ChiTietHoaDon get(String id) throws SQLException {
 		ChiTietHoaDon cthd = new ChiTietHoaDon();
 		HangHoa_DAO hanghoa_dao = new HangHoa_DAO();
 		HoaDon_DAO hoadon_dao = new HoaDon_DAO();
@@ -58,8 +59,8 @@ public class ChiTietHoaDon_DAO extends AbstractConnect implements CRUD<ChiTietHo
 			while(rs.next()) {
 				cthd = (new ChiTietHoaDon(
 						Integer.parseInt(rs.getString("SoLuong")),
-						hanghoa_dao.get(Integer.parseInt(rs.getString("maHH"))),
-						hoadon_dao.get(Integer.parseInt(rs.getString("maHD"))),
+						hanghoa_dao.get(rs.getString("maHH")),
+						hoadon_dao.get(rs.getString("maHD")),
 						Float.parseFloat(rs.getString("price"))
 						)
 						);
@@ -158,7 +159,7 @@ public class ChiTietHoaDon_DAO extends AbstractConnect implements CRUD<ChiTietHo
 			while(rs.next()) {
 				list.add(new ChiTietHoaDon(
 						Integer.parseInt(rs.getString("SoLuong")),
-						hanghoa_dao.getHangHoaForID(rs.getString("maHH")),
+						hanghoa_dao.get(rs.getString("maHH")),
 						hoadon_dao.getById(rs.getString("maHD")),
 						Float.parseFloat(rs.getString("price"))
 						)

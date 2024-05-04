@@ -21,7 +21,7 @@ public class List_ChiTietNhanVien{
 		return ctnv_dao.getAll();
 	}
 	
-	public ChiTietNhanVien get(int id) throws SQLException {
+	public ChiTietNhanVien get(String id) throws SQLException {
 		return ctnv_dao.get(id);
 	}
 	

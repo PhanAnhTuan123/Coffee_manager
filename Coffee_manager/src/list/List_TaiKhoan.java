@@ -5,67 +5,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 import constraint.CRUD;
+import model.KhachHang;
 import model.NhanVien;
 import model.TaiKhoan;
 import service.NhanVien_DAO;
 import service.TaiKhoan_DAO;
 
-public class List_TaiKhoan {
+public class List_TaiKhoan implements CRUD<TaiKhoan> {
 	private TaiKhoan_DAO tk_dao;
 
 	public List_TaiKhoan() {
 		tk_dao = new TaiKhoan_DAO();
 	}
-	
-	public List<TaiKhoan> getAll() throws SQLException {
+
+	@Override
+	public ArrayList<TaiKhoan> getAll() throws SQLException {
 		return tk_dao.getAll();
 	}
-	
-	public TaiKhoan get(int id) throws SQLException {
+
+	@Override
+	public TaiKhoan get(String id) throws SQLException {
 		return tk_dao.get(id);
 	}
-	
-	public boolean add(TaiKhoan tk) throws SQLException {
-		if(tk_dao.getAll().contains(tk)) {
-			return false;
-		}
-		tk_dao.save(tk);
-		return true;
+
+	@Override
+	public void save(TaiKhoan t) throws SQLException {
+		tk_dao.save(t);
 	}
-	
-	public boolean update(TaiKhoan tk) throws SQLException {
-		try {
-			tk_dao.update(tk);
-			return true;
-		}catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+
+	@Override
+	public void update(TaiKhoan t) throws SQLException {
+		tk_dao.update(t);
+	}
+
+	@Override
+	public void delete(TaiKhoan t) throws SQLException {
+		tk_dao.delete(t);
+	}
+
+	@Override
+	public void deleteById(int id) throws SQLException {
+		// TODO Auto-generated method stub
 		
 	}
 	
-	public boolean remove(TaiKhoan tk) {
-		try {
-			tk_dao.delete(tk);
-			return true;
-		}catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		
+	public ArrayList<TaiKhoan>findByName(String name){
+		return tk_dao.findByName(name);
 	}
 	
-	public boolean removeById(int id) {
-		try {
-			tk_dao.deleteById(id);
-			return true;
-		}catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
 	
-	public TaiKhoan getTK(String id) throws SQLException {
-		return tk_dao.getTK(id);
-	}
 }

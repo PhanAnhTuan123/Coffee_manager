@@ -30,10 +30,10 @@ public class HangHoa_DAO implements CRUD<HangHoa> {
 	}
 
 	@Override
-	public HangHoa get(int id) throws SQLException {
-		Statement statement = conn.createStatement();
-        String query = "SELECT * FROM HangHoa WHERE maHH = " + id;
-        ResultSet rs = statement.executeQuery(query);
+	public HangHoa get(String id) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM HangHoa WHERE maHH = ?");
+        stmt.setNString(1, id);
+        ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
         	HangHoa stock = HangHoa.getFromResultSet(rs);
             return stock;
@@ -129,15 +129,15 @@ public class HangHoa_DAO implements CRUD<HangHoa> {
 		
 	}
 
-	public HangHoa getHangHoaForID(String id)  throws SQLException {
-		Statement statement = conn.createStatement();
-        String query = "SELECT * FROM HangHoa WHERE maHH = " + id;
-        ResultSet rs = statement.executeQuery(query);
-        if (rs.next()) {
-        	HangHoa stock = HangHoa.getFromResultSet(rs);
-            return stock;
-        }
-        return null;
-	}
+//	public HangHoa getHangHoaForID(String id)  throws SQLException {
+//		Statement statement = conn.createStatement();
+//        String query = "SELECT * FROM HangHoa WHERE maHH = " + id;
+//        ResultSet rs = statement.executeQuery(query);
+//        if (rs.next()) {
+//        	HangHoa stock = HangHoa.getFromResultSet(rs);
+//            return stock;
+//        }
+//        return null;
+//	}
 
 }

@@ -13,7 +13,7 @@ public interface CRUD<T> {
 
     public ArrayList<T> getAll() throws SQLException;
 
-    public T get(int id) throws SQLException;
+    public T get(String id) throws SQLException;
 
     public void save(T t) throws SQLException;
 

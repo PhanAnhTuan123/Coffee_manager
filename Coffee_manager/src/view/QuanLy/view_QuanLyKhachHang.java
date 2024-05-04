@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,7 +31,10 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+
+import list.List_KhachHang;
 import list.List_NhanVien;
+import model.KhachHang;
 import model.NhanVien;
 import runapp.Login;
 import testbutton.Buttontest;
@@ -51,12 +56,13 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 	private JPanel panelHangHoa, panelDatHang, panelNhanVien, panelTaiKhoan, panelThongKe;
 	Color customColor = new Color(255, 255, 255, 0);
 	Color whiteColor = new Color(255, 255, 255, 0);
-	private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh 
-	private List_NhanVien list_nv = new List_NhanVien();
+	private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh
+	private List_KhachHang list_KhachHang = new List_KhachHang();
 
 	/**
 	 * Launch the application.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 		try {
@@ -79,10 +85,10 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 			java.util.logging.Logger.getLogger(view_QuanLyKhachHang.class.getName()).log(java.util.logging.Level.SEVERE,
 					null, ex);
 		}
-		
+
 		try {
 			ConnectDB.getInstance().connect();
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		view_QuanLyKhachHang frame = new view_QuanLyKhachHang();
@@ -91,7 +97,8 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 
 	/**
 	 * Create the frame.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public view_QuanLyKhachHang() throws Exception {
 		initComponents();
@@ -107,7 +114,8 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 		contentPane.setLayout(null);
 
 		lblNvIcon = new JLabel("");
-		lblNvIcon.setIcon(new ImageIcon(view_QuanLyKhachHang.class.getResource("/image/avt.png"))); // Thay đổi đường dẫn
+		lblNvIcon.setIcon(new ImageIcon(view_QuanLyKhachHang.class.getResource("/image/avt.png"))); // Thay đổi đường
+																									// dẫn
 																									// ảnh của bạn
 		lblNvIcon.setBounds(760, 5, 40, 40); // Điều chỉnh tọa độ và kích thước của ảnh
 		contentPane.add(lblNvIcon);
@@ -119,7 +127,7 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 		lblkhachhang.setForeground(Color.WHITE);
 		contentPane.add(lblkhachhang);
 
-		lbltenkh = new JLabel("Lê Minh Đăng");
+		lbltenkh = new JLabel("Trương Đại Lộc");
 		lbltenkh.setForeground(Color.WHITE);
 		lbltenkh.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lbltenkh.setBounds(832, 0, 238, 50);
@@ -405,7 +413,7 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}	
+			}
 
 		});
 		panelTaiKhoan.add(btnTaiKhoan);
@@ -453,16 +461,6 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 		panelThongKe.setBackground(whiteColor);
 		contentPane.add(panelThongKe);
 
-		JButton btnThongKeNhanVien = new JButton("Thống Kê Nhân Viên");
-		btnThongKeNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnThongKeNhanVien.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
 		JButton btnThongKeDoanhThu = new JButton("Thống Kê Doanh Thu");
 		btnThongKeDoanhThu.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnThongKeDoanhThu.addActionListener(new ActionListener() {
@@ -470,11 +468,18 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
+				// TODO Auto-generated method stub
+				try {
+					view_ThongKeDoanhThu gdtk = new view_ThongKeDoanhThu();
+					gdtk.setVisible(true);
+					dispose();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
-		panelThongKe.add(btnThongKeNhanVien);
 		panelThongKe.add(btnThongKeDoanhThu);
 
 		// Create logout button
@@ -501,14 +506,14 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 				}
 			}
 		});
 		logoutToolBar.add(logoutButton);
 		logoutToolBar.setBackground(customColor);
 		topPanel.add(logoutToolBar);
-		
+
 		JLabel lblQLKH = new JLabel("Quản Lý Khách Hàng");
 		lblQLKH.setForeground(new Color(255, 255, 255));
 		lblQLKH.setFont(new Font("Open Sans", 1, 16));
@@ -590,18 +595,6 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 		txtTimKiem.setBounds(871, 99, 214, 30);
 		contentPane.add(txtTimKiem);
 
-//		JLabel lblChucVu = new JLabel("Chức vụ:");
-//		lblChucVu.setForeground(new Color(255, 255, 255));
-//		lblChucVu.setFont(new Font("Dialog", Font.PLAIN, 16));
-//		lblChucVu.setBounds(17, 440, 70, 21);
-//		contentPane.add(lblChucVu);
-
-//		cboxChucVu = new JComboBox<String>();
-//		cboxChucVu.setBounds(113, 442, 100, 22);
-//		cboxChucVu.addItem("Nhân Viên");
-//		cboxChucVu.addItem("Quản Lý");
-//		contentPane.add(cboxChucVu);
-
 		btntimkiem = new JButton("");
 		btntimkiem.setIcon(new ImageIcon(view_QuanLyKhachHang.class.getResource("/image/search.png")));
 		btntimkiem.setBounds(1090, 99, 40, 30);
@@ -625,33 +618,25 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 		contentPane.add(btnLamMoi);
 
 		// Khởi tạo DefaultTableModel với các cột
-		String[] columnNames = { "Mã NV", "Tên NV","Địa Chỉ", "SĐT","Chức Vụ","Giới tính"}; // Thay đổi tên cột tùy ý
+		String[] columnNames = { "Mã KH", "Tên Khách Hàng", "Địa Chỉ", "SĐT" }; // Thay đổi tên cột tùy ý
 		tableModel = new DefaultTableModel(columnNames, 0);
 
 		// Khởi tạo JTable với DefaultTableModel
 		table = new JTable(tableModel);
-		table.getColumnModel().getColumn(4).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
-		
+		table.getColumnModel().getColumn(3).setPreferredWidth(50); // Đặt giá trị 300 làm ví dụ, bạn có thể điều chỉnh
+
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int r = table.getSelectedRow();
-				txtHoTen.setText(tableModel.getValueAt(r,1).toString());
-				txtSDT.setText(tableModel.getValueAt(r,3).toString());
-				txtDiaChi.setText(tableModel.getValueAt(r,2).toString());
-//				if(tableModel.getValueAt(r,5).toString().equals("Nam")) {
-//					rdbtnNam.setSelected(true);
-//				}else {
-//					rdbtnNu.setSelected(true);
-//				}
-////				if(tableModel.getValueAt(r,4).toString().equals("Nhân Viên")) {
-//					cboxChucVu.setSelectedIndex(0);
-//				}else {
-//					cboxChucVu.setSelectedIndex(1);
-//				}
+				txtHoTen.setText(tableModel.getValueAt(r, 1).toString());
+				txtDiaChi.setText(tableModel.getValueAt(r, 2).toString());
+				txtSDT.setText(tableModel.getValueAt(r, 3).toString());
+				btnSua.setEnabled(true);
+				btnXoa.setEnabled(true);
 			}
 		});
-		
+
 		// theo ý muốn
 
 		// Tạo JScrollPane để thêm bảng vào để có thể cuộn
@@ -661,15 +646,12 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 		// Thêm bảng và JScrollPane vào contentPane
 		contentPane.add(scrollPane);
 
-
-
 		// add su kien
 		btnThem.addActionListener(this);
 		btnXoa.addActionListener(this);
 		btnSua.addActionListener(this);
 		btnLamMoi.addActionListener(this);
 		btntimkiem.addActionListener(this);
-		
 
 		JLabel background = new JLabel("");
 		background.setHorizontalAlignment(SwingConstants.CENTER);
@@ -677,23 +659,17 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 		background.setBounds(0, 0, 1162, 613);
 		contentPane.add(background);
 		
-		
+		refresh();
 		loadData();
 	}
-	
+
 	private void loadData() throws SQLException {
-		
-//		for(NhanVien nv : list_nv.getAll()) {
-//			String gioiTinh = "";
-//			if(nv.getGioiTinh() == true) {
-//				gioiTinh = "Nam"; 
-//			}else {
-//				gioiTinh = "Nữ";
-//			}
-//			tableModel.addRow(new Object[] {nv.getMaNV(),nv.getTenNV(),nv.getDiaChi(),nv.getSdt(),nv.getChucVu(),gioiTinh});
-//		}
+		tableModel.setRowCount(0);
+		for (KhachHang kh : list_KhachHang.getAll()) {
+			tableModel.addRow(new Object[] { kh.getMaKH(), kh.getTenKH(), kh.getDiaChi(), kh.getSdt() });
+		}
 	}
-	
+
 	private void initComponents() {
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		addWindowListener(new java.awt.event.WindowAdapter() {
@@ -711,17 +687,97 @@ public class view_QuanLyKhachHang extends JFrame implements ActionListener {
 
 		pack();
 	}
+
 	private void formWindowClosing(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_formWindowClosing
 		Main_form_manager gdql = new Main_form_manager();
 		gdql.setLocationRelativeTo(null);
 		gdql.setVisible(true);
 	}
+	
+	public void loadByName() {
+		String ten = txtTimKiem.getText();
+		ArrayList<KhachHang> tempList = new ArrayList<KhachHang>();
+		tempList = list_KhachHang.findByName(ten);
+		tableModel.setRowCount(0);
+		for (KhachHang item : tempList) {
+			tableModel.addRow(new Object[] {item.getMaKH(),item.getTenKH(),item.getDiaChi(),item.getSdt()});
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		if (e.getSource().equals(btnThem)) {
+			if (txtHoTen.getText().isEmpty() || txtSDT.getText().isEmpty() || txtDiaChi.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(this, "Vui lòng nhập thông tin đầy đủ");
+			} else {
+				KhachHang khachHang = new KhachHang();
+				khachHang.setMaKH(list_KhachHang.sinhMaKH());
+				khachHang.setTenKH(txtHoTen.getText());
+				khachHang.setSdt(txtSDT.getText());
+				khachHang.setDiaChi(txtDiaChi.getText());
+				try {
+					list_KhachHang.save(khachHang);
+					loadData();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		if (e.getSource().equals(btnSua)) {
+			int r = table.getSelectedRow();
+			KhachHang khachHang = new KhachHang();
+			khachHang.setMaKH(tableModel.getValueAt(r, 0).toString());
+			khachHang.setTenKH(txtHoTen.getText());
+			khachHang.setSdt(txtSDT.getText());
+			khachHang.setDiaChi(txtDiaChi.getText());
+			try {
+				list_KhachHang.update(khachHang);
+				loadData();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Sửa thành công!!");
+		}
+		if (e.getSource().equals(btnXoa)) {
+			int r = table.getSelectedRow();
+			KhachHang khachHang = new KhachHang();
+			khachHang.setMaKH(tableModel.getValueAt(r, 0).toString());
+			try {
+				list_KhachHang.delete(khachHang);
+				loadData();
+				refresh();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Xóa thành công!!");
+		}
+		if (e.getSource().equals(btntimkiem)) {
+//			String ten = txtTimKiem.getText();
+			loadByName();
+
+		}
+		if (e.getSource().equals(btnLamMoi)) {
+			try {
+				loadData();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		refresh();
 	}
 
-	
+	public void refresh() {
+		txtHoTen.setText("");
+		txtDiaChi.setText("");
+		txtSDT.setText("");
+		txtTimKiem.setText("");
+		btnXoa.setEnabled(false);
+		btnSua.setEnabled(false);
+		btnThem.setEnabled(true);
+
+	}
+
 }

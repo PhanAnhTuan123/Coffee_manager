@@ -25,10 +25,10 @@ public class NhanVien_DAO implements CRUD<NhanVien> {
 	}
 
 	@Override
-	public NhanVien get(int id) throws SQLException {
-		Statement statement = conn.createStatement();
-        String query = "SELECT * FROM NhanVien WHERE maNV = " + id;
-        ResultSet rs = statement.executeQuery(query);
+	public NhanVien get(String id) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM NhanVien WHERE maNV = ?");
+        stmt.setNString(1, id);
+        ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
         	NhanVien employee = NhanVien.getFromResultSet(rs);
             return employee;

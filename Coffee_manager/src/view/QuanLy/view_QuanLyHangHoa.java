@@ -411,71 +411,67 @@ public class view_QuanLyHangHoa extends JFrame implements ActionListener {
 		panelTaiKhoan.add(btnTaiKhoan);
 
 		// thêm toolbar "thống kê"
-		JToolBar thongKeToolbar = new JToolBar();
-		thongKeToolbar.setFloatable(false);
-		thongKeToolbar.setMargin(new java.awt.Insets(-5, -5, 0, -5));
-		testbutton.Buttontest thongKeButton = new Buttontest();
-		thongKeButton.setText("Thống Kê");
-		thongKeButton.setFont(new Font("Open Sans", Font.BOLD, 15));
-		thongKeButton.setForeground(SystemColor.text);
-		thongKeButton.setRippleColor(new Color(255, 255, 255));
-		thongKeButton.setBackground(new Color(100, 100, 255));
-		thongKeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() || panelDatHang.isVisible() || panelNhanVien.isVisible()
-						|| panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
-					panelHangHoa.setVisible(false);
-					panelDatHang.setVisible(false);
-					panelNhanVien.setVisible(false);
-					panelTaiKhoan.setVisible(false);
-					panelThongKe.setVisible(false);
-				} else {
-					panelThongKe.setVisible(true);
-				}
-			}
-		});
-		thongKeToolbar.add(thongKeButton);
-		thongKeToolbar.setBackground(customColor);
-		topPanel.add(thongKeToolbar);
+				JToolBar thongKeToolbar = new JToolBar();
+				thongKeToolbar.setFloatable(false);
+				thongKeToolbar.setMargin(new java.awt.Insets(-5, -5, 0, -5));
+				testbutton.Buttontest thongKeButton = new Buttontest();
+				thongKeButton.setText("Thống Kê");
+				thongKeButton.setFont(new Font("Open Sans", Font.BOLD, 15));
+				thongKeButton.setForeground(SystemColor.text);
+				thongKeButton.setRippleColor(new Color(255, 255, 255));
+				thongKeButton.setBackground(new Color(100, 100, 255));
+				thongKeButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
+							panelHangHoa.setVisible(false);
+							panelDatHang.setVisible(false);
+							panelNhanVien.setVisible(false);
+							panelTaiKhoan.setVisible(false);
+							panelThongKe.setVisible(false);
+						} else {
+							panelThongKe.setVisible(true);
+						}
+					}
+				});
+				thongKeToolbar.add(thongKeButton);
+				thongKeToolbar.setBackground(customColor);
+				topPanel.add(thongKeToolbar);
+				
+				panelThongKe = new JPanel() {
+					private static final long serialVersionUID = 1L;
 
-		panelThongKe = new JPanel() {
-			private static final long serialVersionUID = 1L;
-
-			protected void paintComponent(Graphics g) {
-				g.setColor(getBackground());
-				g.fillRect(0, 0, getWidth(), getHeight());
-				super.paintComponent(g);
-			}
-		};
-		panelThongKe.setBounds(0, 49, 1175, 47); // Điều chỉnh tọa độ và kích thước của panel theo ý muốn
-		panelThongKe.setLayout(new FlowLayout(FlowLayout.LEFT)); // Thay đổi ở đây
-		panelThongKe.setVisible(false); // tắt/ẩn panel
-		panelThongKe.setBackground(whiteColor);
-		contentPane.add(panelThongKe);
-
-		JButton btnThongKeNhanVien = new JButton("Thống Kê Nhân Viên");
-		btnThongKeNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnThongKeNhanVien.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		JButton btnThongKeDoanhThu = new JButton("Thống Kê Doanh Thu");
-		btnThongKeDoanhThu.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnThongKeDoanhThu.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		panelThongKe.add(btnThongKeNhanVien);
-		panelThongKe.add(btnThongKeDoanhThu);
+					protected void paintComponent(Graphics g) {
+						g.setColor(getBackground());
+						g.fillRect(0, 0, getWidth(), getHeight());
+						super.paintComponent(g);
+					}
+				};
+				panelThongKe.setBounds(0, 49, 1175, 47); // Điều chỉnh tọa độ và kích thước của panel theo ý muốn
+				panelThongKe.setLayout(new FlowLayout(FlowLayout.LEFT)); // Thay đổi ở đây
+				panelThongKe.setVisible(false); // tắt/ẩn panel
+				panelThongKe.setBackground(whiteColor);
+				contentPane.add(panelThongKe);
+				
+				JButton btnThongKeDoanhThu = new JButton("Thống Kê Doanh Thu"); 
+				btnThongKeDoanhThu.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				btnThongKeDoanhThu.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						// TODO Auto-generated method stub
+						try {
+							view_ThongKeDoanhThu gdtk = new view_ThongKeDoanhThu();
+							gdtk.setVisible(true);
+							dispose();
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+					});
+				
+				panelThongKe.add(btnThongKeDoanhThu);
 
 		// Create logout button
 		JToolBar logoutToolBar = new JToolBar();

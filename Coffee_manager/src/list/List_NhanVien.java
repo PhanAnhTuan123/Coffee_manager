@@ -24,7 +24,7 @@ private NhanVien_DAO nv_dao;
 	}
 
 	@Override
-	public NhanVien get(int id) throws SQLException {
+	public NhanVien get(String id) throws SQLException {
 		return nv_dao.get(id);
 	}
 

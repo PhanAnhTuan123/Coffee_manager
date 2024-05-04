@@ -6,8 +6,6 @@ public class HoaDon {
 	private String maHD;
 	private Date ngay;
 	private Double tongTien;
-	private Integer chietKhau;
-	private Integer diemTL;
 	private NhanVien nhanVien;
 	private KhachHang khachHang;
 	private Ban ban;
@@ -16,14 +14,11 @@ public class HoaDon {
 		super();
 	}
 
-	public HoaDon(String maHD, Date ngay, Double tongTien, Integer chietKhau, Integer diemTL, NhanVien nhanVien,
-			KhachHang khachHang, Ban ban) {
+	public HoaDon(String maHD, Date ngay, Double tongTien, NhanVien nhanVien, KhachHang khachHang, Ban ban) {
 		super();
 		this.maHD = maHD;
 		this.ngay = ngay;
 		this.tongTien = tongTien;
-		this.chietKhau = chietKhau;
-		this.diemTL = diemTL;
 		this.nhanVien = nhanVien;
 		this.khachHang = khachHang;
 		this.ban = ban;
@@ -53,22 +48,6 @@ public class HoaDon {
 		this.tongTien = tongTien;
 	}
 
-	public Integer getChietKhau() {
-		return chietKhau;
-	}
-
-	public void setChietKhau(Integer chietKhau) {
-		this.chietKhau = chietKhau;
-	}
-
-	public Integer getDiemTL() {
-		return diemTL;
-	}
-
-	public void setDiemTL(Integer diemTL) {
-		this.diemTL = diemTL;
-	}
-
 	public NhanVien getNhanVien() {
 		return nhanVien;
 	}
@@ -95,10 +74,8 @@ public class HoaDon {
 
 	@Override
 	public String toString() {
-		return "HoaDon [maHD=" + maHD + ", ngay=" + ngay + ", tongTien=" + tongTien + ", chietKhau=" + chietKhau
-				+ ", diemTL=" + diemTL + ", nhanVien=" + nhanVien + ", khachHang=" + khachHang + ", ban=" + ban + "]";
+		return "HoaDon [maHD=" + maHD + ", ngay=" + ngay + ", tongTien=" + tongTien + ", nhanVien=" + nhanVien
+				+ ", khachHang=" + khachHang + ", ban=" + ban + "]";
 	}
-
-	
 
 }

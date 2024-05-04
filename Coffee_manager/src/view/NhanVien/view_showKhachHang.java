@@ -30,16 +30,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class view_showKhachHang extends JDialog implements ActionListener{
+public class view_showKhachHang extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 	private JTextField txtMaKH;
-<<<<<<< HEAD
-=======
 	public view_hoaDon view;
->>>>>>> f0c3a1419ab1d031a6f69c26b7593b71f5af5152
 	private DefaultTableModel model;
 	private List_KhachHang list_kh;
 	private KhachHang_DAO kh_dao;
@@ -62,16 +59,17 @@ public class view_showKhachHang extends JDialog implements ActionListener{
 
 	/**
 	 * Create the dialog.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	public view_showKhachHang() throws Exception {
-		
+
 		try {
 			ConnectDB.getInstance().connect();
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		kh_dao = new KhachHang_DAO();
 		list_kh = new List_KhachHang();
 		setBounds(100, 100, 485, 617);
@@ -111,7 +109,7 @@ public class view_showKhachHang extends JDialog implements ActionListener{
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						int n = table.getSelectedRow();
-						if(n >=0) {
+						if (n >= 0) {
 							txtMaKH.setText(model.getValueAt(n, 0).toString());
 						}
 					}
@@ -120,11 +118,9 @@ public class view_showKhachHang extends JDialog implements ActionListener{
 			}
 		}
 		{
-			
-			String[] column = {
-				"Mã Khách Hàng","Tên Khách Hàng","Số Điện Thoại"	
-			};
-			model = new DefaultTableModel(column,0);
+
+			String[] column = { "Mã Khách Hàng", "Tên Khách Hàng", "Số Điện Thoại" };
+			model = new DefaultTableModel(column, 0);
 			table.setModel(model);
 		}
 		{
@@ -164,16 +160,9 @@ public class view_showKhachHang extends JDialog implements ActionListener{
 		model.setRowCount(0);
 //		System.out.println(list_kh.getAll());
 		for (KhachHang kh : list_kh.getAll()) {
-			model.addRow(new Object[] {
-				kh.getMaKH(),
-				kh.getTenKH(),
-				kh.getSdt()
-			});
+			model.addRow(new Object[] { kh.getMaKH(), kh.getTenKH(), kh.getSdt() });
 		}
 	}
-
-<<<<<<< HEAD
-=======
 
 	public view_hoaDon getView() {
 		return view;
@@ -185,27 +174,25 @@ public class view_showKhachHang extends JDialog implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(arg0.getSource().equals(okButton)) {
+		if (arg0.getSource().equals(okButton)) {
 			System.out.println("OK!");
 			onSubmitButtonClick();
 		}
-		if(arg0.getSource().equals(cancelButton)) {
+		if (arg0.getSource().equals(cancelButton)) {
 			System.out.println("Cancel");
 		}
 	}
-	private void onSubmitButtonClick() {
-		if(txtMaKH.getText().equalsIgnoreCase("")) {
-			JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng cần thêm.");
-		}else {	
-		
-		view.submitMaKH(txtMaKH.getText());
-		KhachHang kh= new KhachHang();
-		kh.setMaKH(txtMaKH.getText());
-		view.setTempKH(kh);
-		dispose();
-		}
-		}
->>>>>>> f0c3a1419ab1d031a6f69c26b7593b71f5af5152
-	
 
+	private void onSubmitButtonClick() {
+		if (txtMaKH.getText().equalsIgnoreCase("")) {
+			JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng cần thêm.");
+		} else {
+
+			view.submitMaKH(txtMaKH.getText());
+			KhachHang kh = new KhachHang();
+			kh.setMaKH(txtMaKH.getText());
+			view.setTempKH(kh);
+			dispose();
+		}
+	}
 }

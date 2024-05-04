@@ -16,7 +16,7 @@ public class List_ChiTietHoaDon implements CRUD<ChiTietHoaDon>{
 	}
 
 	@Override
-	public ChiTietHoaDon get(int id) throws SQLException {
+	public ChiTietHoaDon get(String id) throws SQLException {
 		return new ChiTietHoaDon_DAO().get(id);
 	}
 

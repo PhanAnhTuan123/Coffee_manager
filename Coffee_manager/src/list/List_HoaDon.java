@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jfree.data.category.DefaultCategoryDataset;
+
 import constraint.CRUD;
 import model.HoaDon;
 import service.HoaDon_DAO;
@@ -16,7 +18,7 @@ public class List_HoaDon implements CRUD<HoaDon>{
 	}
 
 	@Override
-	public HoaDon get(int id) throws SQLException {
+	public HoaDon get(String id) throws SQLException {
 		return new HoaDon_DAO().get(id);
 	}
 
@@ -44,6 +46,16 @@ public class List_HoaDon implements CRUD<HoaDon>{
 		return new HoaDon_DAO().sinhMa();
 	}
 
+	public List<String[]> getThongTinDoanhThu() throws SQLException {
+		return new HoaDon_DAO().getThongKeDoanhThu();
+	}
 	
+	public String getThongKeDoanhThuCaoNhatTrongNam() throws SQLException {
+		return new HoaDon_DAO().getThongKeDoanhThuCaoNhatTrongNam();
+	}
+	
+	public DefaultCategoryDataset drawThongKeDoanhThuCaoNhatTrongNam() throws SQLException {
+		return new HoaDon_DAO().drawThongKeDoanhThuCaoNhatTrongNam();
+	}
 	
 }

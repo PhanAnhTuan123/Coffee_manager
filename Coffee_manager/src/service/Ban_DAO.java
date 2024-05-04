@@ -84,7 +84,7 @@ public class Ban_DAO extends AbstractConnect implements CRUD<Ban> {
 	}
 
 	@Override
-	public Ban get(int id) throws SQLException {
+	public Ban get(String id) throws SQLException {
 		Ban ban = new Ban();
 		try {
 			String sql = "select * from Ban where maBan = ?";

@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -30,8 +31,11 @@ import javax.swing.table.DefaultTableModel;
 
 import db.ConnectDB;
 import list.List_HangHoa;
+import list.List_NhanVien;
 import list.List_TaiKhoan;
 import model.HangHoa;
+import model.KhachHang;
+import model.NhanVien;
 import model.TaiKhoan;
 import runapp.Login;
 import testbutton.Buttontest;
@@ -52,6 +56,7 @@ public class view_QuanLyTaiKhoan extends JFrame implements ActionListener{
 	Color whiteColor = new Color(255, 255, 255, 0);
 	private JLabel lblNvIcon; // Thêm biến để lưu đối tượng JLabel chứa ảnh NV
 	private List_TaiKhoan list_TaiKhoan = new List_TaiKhoan();
+	private List_NhanVien list_NhanVien = new List_NhanVien();
 
 	/**
 	 * Launch the application.
@@ -410,71 +415,67 @@ public class view_QuanLyTaiKhoan extends JFrame implements ActionListener{
 		panelTaiKhoan.add(btnTaiKhoan);
 
 		// thêm toolbar "thống kê"
-		JToolBar thongKeToolbar = new JToolBar();
-		thongKeToolbar.setFloatable(false);
-		thongKeToolbar.setMargin(new java.awt.Insets(-5, -5, 0, -5));
-		testbutton.Buttontest thongKeButton = new Buttontest();
-		thongKeButton.setText("Thống Kê");
-		thongKeButton.setFont(new Font("Open Sans", Font.BOLD, 15));
-		thongKeButton.setForeground(SystemColor.text);
-		thongKeButton.setRippleColor(new Color(255, 255, 255));
-		thongKeButton.setBackground(new Color(100, 100, 255));
-		thongKeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (panelHangHoa.isVisible() || panelDatHang.isVisible() || panelNhanVien.isVisible()
-						|| panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
-					panelHangHoa.setVisible(false);
-					panelDatHang.setVisible(false);
-					panelNhanVien.setVisible(false);
-					panelTaiKhoan.setVisible(false);
-					panelThongKe.setVisible(false);
-				} else {
-					panelThongKe.setVisible(true);
-				}
-			}
-		});
-		thongKeToolbar.add(thongKeButton);
-		thongKeToolbar.setBackground(customColor);
-		topPanel.add(thongKeToolbar);
+				JToolBar thongKeToolbar = new JToolBar();
+				thongKeToolbar.setFloatable(false);
+				thongKeToolbar.setMargin(new java.awt.Insets(-5, -5, 0, -5));
+				testbutton.Buttontest thongKeButton = new Buttontest();
+				thongKeButton.setText("Thống Kê");
+				thongKeButton.setFont(new Font("Open Sans", Font.BOLD, 15));
+				thongKeButton.setForeground(SystemColor.text);
+				thongKeButton.setRippleColor(new Color(255, 255, 255));
+				thongKeButton.setBackground(new Color(100, 100, 255));
+				thongKeButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if (panelHangHoa.isVisible() ||panelDatHang.isVisible() || panelNhanVien.isVisible() || panelTaiKhoan.isVisible() || panelThongKe.isVisible()) {
+							panelHangHoa.setVisible(false);
+							panelDatHang.setVisible(false);
+							panelNhanVien.setVisible(false);
+							panelTaiKhoan.setVisible(false);
+							panelThongKe.setVisible(false);
+						} else {
+							panelThongKe.setVisible(true);
+						}
+					}
+				});
+				thongKeToolbar.add(thongKeButton);
+				thongKeToolbar.setBackground(customColor);
+				topPanel.add(thongKeToolbar);
+				
+				panelThongKe = new JPanel() {
+					private static final long serialVersionUID = 1L;
 
-		panelThongKe = new JPanel() {
-			private static final long serialVersionUID = 1L;
-
-			protected void paintComponent(Graphics g) {
-				g.setColor(getBackground());
-				g.fillRect(0, 0, getWidth(), getHeight());
-				super.paintComponent(g);
-			}
-		};
-		panelThongKe.setBounds(0, 49, 1175, 47); // Điều chỉnh tọa độ và kích thước của panel theo ý muốn
-		panelThongKe.setLayout(new FlowLayout(FlowLayout.LEFT)); // Thay đổi ở đây
-		panelThongKe.setVisible(false); // tắt/ẩn panel
-		panelThongKe.setBackground(whiteColor);
-		contentPane.add(panelThongKe);
-
-		JButton btnThongKeNhanVien = new JButton("Thống Kê Nhân Viên");
-		btnThongKeNhanVien.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnThongKeNhanVien.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		JButton btnThongKeDoanhThu = new JButton("Thống Kê Doanh Thu");
-		btnThongKeDoanhThu.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnThongKeDoanhThu.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		panelThongKe.add(btnThongKeNhanVien);
-		panelThongKe.add(btnThongKeDoanhThu);
+					protected void paintComponent(Graphics g) {
+						g.setColor(getBackground());
+						g.fillRect(0, 0, getWidth(), getHeight());
+						super.paintComponent(g);
+					}
+				};
+				panelThongKe.setBounds(0, 49, 1175, 47); // Điều chỉnh tọa độ và kích thước của panel theo ý muốn
+				panelThongKe.setLayout(new FlowLayout(FlowLayout.LEFT)); // Thay đổi ở đây
+				panelThongKe.setVisible(false); // tắt/ẩn panel
+				panelThongKe.setBackground(whiteColor);
+				contentPane.add(panelThongKe);
+				
+				JButton btnThongKeDoanhThu = new JButton("Thống Kê Doanh Thu"); 
+				btnThongKeDoanhThu.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				btnThongKeDoanhThu.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						// TODO Auto-generated method stub
+						try {
+							view_ThongKeDoanhThu gdtk = new view_ThongKeDoanhThu();
+							gdtk.setVisible(true);
+							dispose();
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+					});
+				
+				panelThongKe.add(btnThongKeDoanhThu);
 
 		// Create logout button
 		JToolBar logoutToolBar = new JToolBar();
@@ -593,6 +594,8 @@ public class view_QuanLyTaiKhoan extends JFrame implements ActionListener{
 				int r = table.getSelectedRow();
 				txtTenDN.setText(tableModel.getValueAt(r,0).toString());
 				txtMK.setText(tableModel.getValueAt(r,1).toString());
+				btnXoa.setEnabled(true);
+				btnSua.setEnabled(true);
 			}
 		});
 		
@@ -621,11 +624,12 @@ public class view_QuanLyTaiKhoan extends JFrame implements ActionListener{
 		background.setBounds(0, 0, 1162, 613);
 		contentPane.add(background);
 		
-		
+		refresh();
 		loadData();
 	}
 	
 	private void loadData() throws SQLException {
+		tableModel.setRowCount(0);
 		for(TaiKhoan tk : list_TaiKhoan.getAll()) {
 			tableModel.addRow(new Object[] {tk.getUserName().getMaNV(),tk.getPassWord()});
 		}
@@ -654,9 +658,123 @@ public class view_QuanLyTaiKhoan extends JFrame implements ActionListener{
 		gdql.setVisible(true);
 	}
 
+	public void loadByName() {
+		String ten = txtTimKiem.getText();
+		ArrayList<TaiKhoan> tempList = new ArrayList<TaiKhoan>();
+		tempList = list_TaiKhoan.findByName(ten);
+		tableModel.setRowCount(0);
+		for (TaiKhoan item : tempList) {
+			tableModel.addRow(new Object[] {item.getUserName().getMaNV(),item.getPassWord()});
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+//		if (e.getSource().equals(btnThem)) {
+//			if (txtTenDN.getText().isEmpty() || txtMK.getText().isEmpty()) {
+//				JOptionPane.showMessageDialog(this, "Vui lòng nhập thông tin đầy đủ");
+//			} else {
+//				TaiKhoan taiKhoan = new TaiKhoan();
+//				taiKhoan.setUserName(new NhanVien(txtTenDN.getText()));
+//				taiKhoan.setPassWord(txtMK.getText());
+//				try {
+//					if(taiKhoan.getUserName().getMaNV().matches("/NV\\d{3}/")) {
+//						list_TaiKhoan.save(taiKhoan);
+//						loadData();
+//					}else {
+//						JOptionPane.showMessageDialog(this, "Tên tài khoản phải bắt đầu từ NV và phải có trong hệ thống");
+//					}
+//				} catch (SQLException e1) {
+//					JOptionPane.showMessageDialog(this, "Không có nhân viên này trong hệ thống, phải thêm nhân viên mới vào trước");
+//					try {
+//						view_QuanLyNhanVien gdqlnv = new view_QuanLyNhanVien();
+//						gdqlnv.setVisible(true);
+//						dispose();
+//					}catch(Exception e2) {
+//						
+//					}
+//				}
+//			}
+//		}
+		if (e.getSource().equals(btnThem)) {
+		    if (txtTenDN.getText().isEmpty() || txtMK.getText().isEmpty()) {
+		        JOptionPane.showMessageDialog(this, "Vui lòng nhập thông tin đầy đủ");
+		    } else {
+		        TaiKhoan taiKhoan = new TaiKhoan();
+		        taiKhoan.setUserName(new NhanVien(txtTenDN.getText()));
+		        taiKhoan.setPassWord(txtMK.getText());
+		        try {
+		            // Sử dụng regex đã chỉnh sửa để kiểm tra tên tài khoản
+		            if (taiKhoan.getUserName().getMaNV().matches("^NV\\d{3}$")) {
+		                list_TaiKhoan.save(taiKhoan);
+		                loadData();
+		            } else {
+		                JOptionPane.showMessageDialog(this, "Tên tài khoản phải bắt đầu từ NV và theo sau là 3 chữ số");
+		            }
+		        } catch (SQLException e1) {
+		            JOptionPane.showMessageDialog(this, "Không có nhân viên này trong hệ thống, phải thêm nhân viên mới vào trước");
+		            try {
+		                view_QuanLyNhanVien gdqlnv = new view_QuanLyNhanVien();
+		                gdqlnv.setVisible(true);
+		                this.dispose(); // Nên sử dụng 'this.dispose()' thay vì 'dispose()' để rõ ràng hơn đây là method của instance hiện tại.
+		            } catch (Exception e2) {
+		                e2.printStackTrace(); // Luôn in ra stack trace khi xảy ra ngoại lệ mà bạn không xử lý cụ thể.
+		            }
+		        }
+		    }
+		}
+		if (e.getSource().equals(btnSua)) {
+			int r = table.getSelectedRow();
+			TaiKhoan taiKhoan = new TaiKhoan();
+			taiKhoan.setUserName(new NhanVien(txtTenDN.getText()));
+			taiKhoan.setPassWord(txtMK.getText());
+			try {
+				list_TaiKhoan.update(taiKhoan);
+				loadData();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Sửa thành công!!");
+		}
+		if (e.getSource().equals(btnXoa)) {
+			int r = table.getSelectedRow();
+			TaiKhoan taiKhoan;
+			try {
+				taiKhoan = new TaiKhoan();
+				taiKhoan.setUserName(list_NhanVien.get(txtTenDN.getText()));
+				list_TaiKhoan.delete(taiKhoan);
+				loadData();
+				refresh();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Xóa thành công!!");
+		}
+		if (e.getSource().equals(btntimkiem)) {
+//			String ten = txtTimKiem.getText();
+			loadByName();
+
+		}
+		if (e.getSource().equals(btnLamMoi)) {
+			try {
+				loadData();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		refresh();
+	}
+
+	public void refresh() {
+		txtTenDN.setText("");
+		txtMK.setText("");
+		txtTimKiem.setText("");
+		btnXoa.setEnabled(false);
+		btnSua.setEnabled(false);
+		btnThem.setEnabled(true);
+
 	}
 }

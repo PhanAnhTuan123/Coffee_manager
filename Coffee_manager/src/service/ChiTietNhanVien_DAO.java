@@ -25,7 +25,7 @@ public class ChiTietNhanVien_DAO implements CRUD<ChiTietNhanVien> {
 	}
 
 	@Override
-	public ChiTietNhanVien get(int id) throws SQLException {
+	public ChiTietNhanVien get(String id) throws SQLException {
 		Statement statement = conn.createStatement();
         String query = "SELECT * FROM ChiTietNhanVien WHERE maNV = " + id;
         ResultSet rs = statement.executeQuery(query);

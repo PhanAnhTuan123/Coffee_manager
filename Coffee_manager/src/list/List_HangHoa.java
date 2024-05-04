@@ -26,7 +26,7 @@ public class List_HangHoa implements CRUD<HangHoa>{
 
 	}
 	
-	public HangHoa get(int id) throws SQLException {
+	public HangHoa get(String id) throws SQLException {
 		return hh_dao.get(id);
 	}
 	
@@ -95,7 +95,7 @@ public class List_HangHoa implements CRUD<HangHoa>{
 	}
 
 	public HangHoa getHangHoaForID(String id) throws SQLException {
-		return hh_dao.getHangHoaForID(id);
+		return hh_dao.get(id);
 	}
 
 }

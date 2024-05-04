@@ -34,7 +34,7 @@ private KhachHang_DAO kh_dao;
 	}
 
 	@Override
-	public KhachHang get(int id) throws SQLException {
+	public KhachHang get(String id) throws SQLException {
 		return kh_dao.get(id);
 	}
 
@@ -65,9 +65,4 @@ private KhachHang_DAO kh_dao;
 	public ArrayList<KhachHang>findByName(String name){
 		return kh_dao.findByName(name);
 	}	
-	public KhachHang getById(String id) throws SQLException {
-		return kh_dao.getById(id);
-	}
-	
-
 }

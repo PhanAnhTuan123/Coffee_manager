@@ -15,7 +15,7 @@ public class List_Ban implements CRUD<Ban>{
 	}
 
 	@Override
-	public Ban get(int id) throws SQLException {
+	public Ban get(String id) throws SQLException {
 		return new Ban_DAO().get(id);
 	}
 
