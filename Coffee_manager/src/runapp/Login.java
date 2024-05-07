@@ -93,7 +93,7 @@ public class Login extends JFrame implements ActionListener {
 
 		JLabel lblNewLabel_2 = new JLabel("Coffee Shop");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel_2.setBounds(101, 74, 130, 17);
+		lblNewLabel_2.setBounds(100, 60, 130, 31);
 		panel.add(lblNewLabel_2);
 
 		btnDangNhap = new testbutton.Buttontest();
